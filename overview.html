@@ -1,0 +1,1516 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bức tranh AI 2026 — Sơ đồ tổng quan</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --bg: #FAF8F3;
+    --bg-card: #FFFFFF;
+    --ink: #1A1A1A;
+    --ink-soft: #4A4A48;
+    --ink-mute: #807E78;
+    --line: #D9D2BE;
+    --line-soft: #E5DFD0;
+    --accent: #B5481C;
+
+    --c-blue: #1E5A8E;
+    --c-purple: #5B4A9F;
+    --c-teal: #0F6E56;
+    --c-coral: #B5481C;
+    --c-pink: #A33863;
+    --c-amber: #8A5A14;
+    --c-green: #4F6E1E;
+    --c-red: #9B2929;
+  }
+
+  body {
+    font-family: 'Inter', -apple-system, sans-serif;
+    background: var(--bg);
+    color: var(--ink);
+    padding: 24px 16px;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .serif { font-family: 'Fraunces', Georgia, serif; }
+
+  .page {
+    max-width: 1500px;
+    margin: 0 auto;
+  }
+
+  /* === HEADER === */
+  .header {
+    text-align: center;
+    margin-bottom: 24px;
+    padding-bottom: 16px;
+  }
+
+  .header h1 {
+    font-family: 'Fraunces', serif;
+    font-size: 30px;
+    font-weight: 500;
+    letter-spacing: -0.02em;
+    line-height: 1.15;
+  }
+
+  .header h1 em {
+    font-style: italic;
+    color: var(--accent);
+  }
+
+  .header-sub {
+    font-size: 13px;
+    color: var(--ink-mute);
+    margin-top: 6px;
+    letter-spacing: 0.02em;
+  }
+
+  /* === SVG === */
+  .diagram-wrap {
+    background: var(--bg-card);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 16px;
+    overflow-x: auto;
+  }
+
+  svg {
+    display: block;
+    width: 100%;
+    height: auto;
+    min-width: 900px;
+  }
+
+  /* SVG text styles */
+  .t-root-title {
+    font-family: 'Fraunces', Georgia, serif;
+    font-size: 22px;
+    font-weight: 500;
+    font-style: italic;
+    fill: #FFFFFF;
+  }
+
+  .t-root-sub {
+    font-family: 'Inter', sans-serif;
+    font-size: 11px;
+    font-weight: 400;
+    fill: #FFFFFF;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    opacity: 0.85;
+  }
+
+  .t-branch {
+    font-family: 'Fraunces', Georgia, serif;
+    font-size: 18px;
+    font-weight: 500;
+    fill: #FFFFFF;
+  }
+
+  .t-branch-sub {
+    font-family: 'Inter', sans-serif;
+    font-size: 10px;
+    fill: #FFFFFF;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    opacity: 0.85;
+  }
+
+  .t-area {
+    font-family: 'Fraunces', Georgia, serif;
+    font-size: 14px;
+    font-weight: 500;
+  }
+
+  .t-tools {
+    font-family: 'Inter', sans-serif;
+    font-size: 11px;
+    font-weight: 400;
+    fill: var(--ink-soft);
+  }
+
+  .t-tech {
+    font-family: 'Inter', sans-serif;
+    font-size: 10px;
+    font-weight: 500;
+    fill: var(--ink-mute);
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+
+  /* === FOUNDATION FOOTER === */
+  .foundation {
+    margin-top: 16px;
+    background: var(--bg-card);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 18px 22px;
+  }
+
+  .foundation-title {
+    font-family: 'Fraunces', serif;
+    font-size: 15px;
+    font-weight: 500;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .foundation-title::before {
+    content: "⚙";
+    color: var(--accent);
+    font-size: 16px;
+  }
+
+  .foundation-title-sub {
+    font-size: 11px;
+    color: var(--ink-mute);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    font-family: 'Inter', sans-serif;
+    font-weight: 400;
+    margin-left: auto;
+  }
+
+  .foundation-grid {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 14px;
+  }
+
+  .found-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .found-letter {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-size: 22px;
+    font-weight: 500;
+    line-height: 1;
+    width: 28px;
+    flex-shrink: 0;
+  }
+
+  .found-text strong {
+    display: block;
+    font-size: 13px;
+    font-weight: 500;
+    margin-bottom: 2px;
+  }
+
+  .found-text span {
+    display: block;
+    font-size: 11px;
+    color: var(--ink-mute);
+    line-height: 1.4;
+  }
+
+  .found-item.f1 .found-letter { color: var(--c-purple); }
+  .found-item.f2 .found-letter { color: var(--c-coral); }
+  .found-item.f3 .found-letter { color: var(--c-pink); }
+  .found-item.f4 .found-letter { color: var(--c-blue); }
+  .found-item.f5 .found-letter { color: var(--c-teal); }
+  .found-item.f6 .found-letter { color: var(--c-amber); }
+
+  /* === RESPONSIVE === */
+  @media (max-width: 900px) {
+    .foundation-grid { grid-template-columns: repeat(2, 1fr); }
+    .header h1 { font-size: 22px; }
+  }
+
+  /* === EXPLAIN SECTION === */
+  .explain {
+    margin-top: 16px;
+    background: var(--bg-card);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 22px 26px;
+  }
+
+  .explain-title {
+    font-family: 'Fraunces', serif;
+    font-size: 16px;
+    font-weight: 500;
+    margin-bottom: 4px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .explain-title em {
+    font-style: italic;
+    color: var(--accent);
+  }
+
+  .explain-sub {
+    font-size: 12px;
+    color: var(--ink-mute);
+    margin-bottom: 18px;
+    letter-spacing: 0.02em;
+  }
+
+  .explain-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 18px 28px;
+  }
+
+  .explain-item {
+    padding-left: 14px;
+    border-left: 2px solid var(--explain-color);
+  }
+
+  .explain-item-head {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    margin-bottom: 6px;
+  }
+
+  .explain-item-letter {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-size: 18px;
+    font-weight: 500;
+    color: var(--explain-color);
+    line-height: 1;
+  }
+
+  .explain-item-name {
+    font-family: 'Fraunces', serif;
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--ink);
+  }
+
+  .explain-item-full {
+    font-size: 10.5px;
+    color: var(--ink-mute);
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+    margin-left: 26px;
+  }
+
+  .explain-item-body {
+    font-size: 12.5px;
+    color: var(--ink-soft);
+    line-height: 1.55;
+    margin-left: 26px;
+  }
+
+  .explain-item-body strong {
+    color: var(--ink);
+    font-weight: 500;
+  }
+
+  .explain-item.e1 { --explain-color: var(--c-purple); }
+  .explain-item.e2 { --explain-color: var(--c-coral); }
+  .explain-item.e3 { --explain-color: var(--c-pink); }
+  .explain-item.e4 { --explain-color: var(--c-blue); }
+  .explain-item.e5 { --explain-color: var(--c-teal); }
+  .explain-item.e6 { --explain-color: var(--c-amber); }
+
+  /* === GLOSSARY (extra terms) === */
+  .glossary {
+    margin-top: 20px;
+    padding-top: 18px;
+    border-top: 1px dashed var(--line);
+  }
+
+  .glossary-title {
+    font-family: 'Fraunces', serif;
+    font-size: 13px;
+    font-weight: 500;
+    margin-bottom: 12px;
+    color: var(--ink);
+    letter-spacing: 0.02em;
+  }
+
+  .glossary-title em {
+    font-style: italic;
+    color: var(--accent);
+  }
+
+  .glossary-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px 28px;
+  }
+
+  .glossary-row {
+    font-size: 12px;
+    line-height: 1.5;
+    color: var(--ink-soft);
+    display: flex;
+    gap: 8px;
+  }
+
+  .glossary-term {
+    font-weight: 500;
+    color: var(--ink);
+    flex-shrink: 0;
+    min-width: 90px;
+    font-family: 'Inter', sans-serif;
+  }
+
+  .glossary-def {
+    flex: 1;
+  }
+
+  @media (max-width: 900px) {
+    .explain-grid { grid-template-columns: 1fr; gap: 16px; }
+    .glossary-grid { grid-template-columns: 1fr; }
+  }
+
+  /* === AGENTIC AI SECTION === */
+  .agentic {
+    margin-top: 16px;
+    background: linear-gradient(135deg, #FFF8F2 0%, #FAF1E4 100%);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 26px 28px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .agentic::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 180px;
+    height: 180px;
+    background: radial-gradient(circle at top right, rgba(181, 72, 28, 0.08), transparent 70%);
+    pointer-events: none;
+  }
+
+  .agentic-header {
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+    margin-bottom: 6px;
+    position: relative;
+  }
+
+  .agentic-tag {
+    display: inline-block;
+    padding: 3px 10px;
+    background: var(--accent);
+    color: #FFFFFF;
+    border-radius: 4px;
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  .agentic-title {
+    font-family: 'Fraunces', serif;
+    font-size: 22px;
+    font-weight: 500;
+    letter-spacing: -0.01em;
+  }
+
+  .agentic-title em {
+    font-style: italic;
+    color: var(--accent);
+  }
+
+  .agentic-lead {
+    font-family: 'Fraunces', serif;
+    font-size: 14px;
+    font-style: italic;
+    color: var(--ink-soft);
+    margin-bottom: 22px;
+    max-width: 800px;
+    line-height: 1.55;
+  }
+
+  /* Comparison table */
+  .agentic-compare {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+    margin-bottom: 24px;
+  }
+
+  .compare-card {
+    background: var(--bg-card);
+    border-radius: 8px;
+    padding: 18px 20px;
+    border-left: 3px solid var(--compare-color);
+  }
+
+  .compare-card.before { --compare-color: var(--ink-mute); }
+  .compare-card.after { --compare-color: var(--accent); }
+
+  .compare-label {
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--compare-color);
+    font-weight: 500;
+    margin-bottom: 8px;
+  }
+
+  .compare-title {
+    font-family: 'Fraunces', serif;
+    font-size: 16px;
+    font-weight: 500;
+    margin-bottom: 10px;
+  }
+
+  .compare-list {
+    list-style: none;
+    font-size: 12.5px;
+    color: var(--ink-soft);
+    line-height: 1.6;
+  }
+
+  .compare-list li {
+    padding-left: 16px;
+    position: relative;
+    margin-bottom: 4px;
+  }
+
+  .compare-list li::before {
+    content: "→";
+    position: absolute;
+    left: 0;
+    color: var(--compare-color);
+  }
+
+  /* Agentic loop diagram */
+  .agentic-loop-section {
+    margin-bottom: 24px;
+  }
+
+  .agentic-section-title {
+    font-family: 'Fraunces', serif;
+    font-size: 15px;
+    font-weight: 500;
+    margin-bottom: 14px;
+    color: var(--ink);
+  }
+
+  .loop-diagram {
+    background: var(--bg-card);
+    border-radius: 8px;
+    padding: 20px;
+    border: 1px solid var(--line);
+  }
+
+  /* Levels */
+  .agentic-levels {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 8px;
+    margin-bottom: 24px;
+  }
+
+  .level-card {
+    background: var(--bg-card);
+    border-radius: 6px;
+    padding: 14px 12px;
+    border-top: 3px solid var(--level-color);
+    position: relative;
+  }
+
+  .level-num {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-size: 12px;
+    color: var(--level-color);
+    font-weight: 500;
+    margin-bottom: 2px;
+  }
+
+  .level-name {
+    font-family: 'Fraunces', serif;
+    font-size: 14px;
+    font-weight: 500;
+    margin-bottom: 6px;
+    line-height: 1.2;
+  }
+
+  .level-desc {
+    font-size: 11.5px;
+    color: var(--ink-soft);
+    line-height: 1.5;
+  }
+
+  .level-card.l1 { --level-color: #B4B2A9; }
+  .level-card.l2 { --level-color: #85B7EB; }
+  .level-card.l3 { --level-color: #5DCAA5; }
+  .level-card.l4 { --level-color: #EF9F27; }
+  .level-card.l5 { --level-color: #E24B4A; }
+
+  /* Examples */
+  .agentic-examples {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 14px;
+  }
+
+  .example-card {
+    background: var(--bg-card);
+    border-radius: 8px;
+    padding: 16px 18px;
+    border: 1px solid var(--line);
+  }
+
+  .example-icon {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-size: 18px;
+    color: var(--accent);
+    margin-bottom: 6px;
+  }
+
+  .example-title {
+    font-family: 'Fraunces', serif;
+    font-size: 14px;
+    font-weight: 500;
+    margin-bottom: 8px;
+  }
+
+  .example-flow {
+    font-size: 11.5px;
+    color: var(--ink-soft);
+    line-height: 1.6;
+  }
+
+  .example-flow .step {
+    display: block;
+    padding: 3px 0;
+    border-bottom: 1px dashed var(--line-soft);
+  }
+
+  .example-flow .step:last-child { border-bottom: none; }
+
+  .example-flow .step-num {
+    color: var(--accent);
+    font-weight: 500;
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    margin-right: 6px;
+  }
+
+  @media (max-width: 900px) {
+    .agentic-compare { grid-template-columns: 1fr; }
+    .agentic-levels { grid-template-columns: 1fr 1fr; }
+    .agentic-examples { grid-template-columns: 1fr; }
+  }
+
+  /* === BUZZWORDS SECTION === */
+  .buzzwords {
+    margin-top: 16px;
+    background: var(--bg-card);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 22px 26px;
+  }
+
+  .buzzwords-header {
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+    margin-bottom: 6px;
+  }
+
+  .buzzwords-tag {
+    display: inline-block;
+    padding: 3px 10px;
+    background: #1A1A1A;
+    color: #FFFFFF;
+    border-radius: 4px;
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  .buzzwords-title {
+    font-family: 'Fraunces', serif;
+    font-size: 18px;
+    font-weight: 500;
+    letter-spacing: -0.01em;
+  }
+
+  .buzzwords-title em {
+    font-style: italic;
+    color: var(--accent);
+  }
+
+  .buzzwords-lead {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-size: 13px;
+    color: var(--ink-mute);
+    margin-bottom: 18px;
+  }
+
+  .buzzwords-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 14px 24px;
+  }
+
+  .buzzword-card {
+    padding: 12px 0 12px 16px;
+    border-left: 2px solid var(--buzz-color);
+  }
+
+  .buzzword-head {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    margin-bottom: 4px;
+    flex-wrap: wrap;
+  }
+
+  .buzzword-name {
+    font-family: 'Fraunces', serif;
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--ink);
+  }
+
+  .buzzword-pron {
+    font-size: 11px;
+    color: var(--ink-mute);
+    font-style: italic;
+  }
+
+  .buzzword-hot {
+    display: inline-block;
+    font-size: 9px;
+    padding: 2px 7px;
+    background: var(--buzz-color);
+    color: #FFFFFF;
+    border-radius: 3px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    font-weight: 500;
+  }
+
+  .buzzword-body {
+    font-size: 12.5px;
+    color: var(--ink-soft);
+    line-height: 1.55;
+  }
+
+  .buzzword-body strong {
+    color: var(--ink);
+    font-weight: 500;
+  }
+
+  .buzzword-example {
+    font-size: 11.5px;
+    color: var(--ink-mute);
+    margin-top: 4px;
+    font-style: italic;
+    font-family: 'Fraunces', serif;
+  }
+
+  .buzzword-card.b1 { --buzz-color: #B5481C; }
+  .buzzword-card.b2 { --buzz-color: #5B4A9F; }
+  .buzzword-card.b3 { --buzz-color: #0F6E56; }
+  .buzzword-card.b4 { --buzz-color: #A33863; }
+  .buzzword-card.b5 { --buzz-color: #1E5A8E; }
+  .buzzword-card.b6 { --buzz-color: #8A5A14; }
+  .buzzword-card.b7 { --buzz-color: #4F6E1E; }
+  .buzzword-card.b8 { --buzz-color: #9B2929; }
+
+  @media (max-width: 900px) {
+    .buzzwords-grid { grid-template-columns: 1fr; }
+  }
+
+  @media print {
+    body { padding: 0; background: white; }
+    @page { size: A3 landscape; margin: 0.8cm; }
+  }
+</style>
+</head>
+<body>
+
+<div class="page">
+
+  <header class="header">
+    <h1 class="serif">Bức tranh <em>AI 2026</em> — sơ đồ tổng quan</h1>
+    <p class="header-sub">Cá nhân &amp; doanh nghiệp · 16 mảng ứng dụng · 6 kỹ thuật nền tảng</p>
+  </header>
+
+  <div class="diagram-wrap">
+
+    <svg viewBox="0 0 1400 920" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="diag-title diag-desc">
+      <title id="diag-title">Sơ đồ phân nhánh bức tranh AI 2026</title>
+      <desc id="diag-desc">Gốc AI tỏa ra hai nhánh cá nhân và doanh nghiệp, mỗi nhánh có 8 mảng ứng dụng với tools và kỹ thuật.</desc>
+
+      <defs>
+        <!-- subtle marker for end of lines (small dot) -->
+        <marker id="dot-end" viewBox="0 0 8 8" refX="4" refY="4" markerWidth="6" markerHeight="6">
+          <circle cx="4" cy="4" r="2" fill="#B5481C"/>
+        </marker>
+      </defs>
+
+      <!-- ===== CONNECTOR LINES (drawn first, behind nodes) ===== -->
+
+      <!-- Root to two branch hubs -->
+      <path d="M 700 110 Q 700 160 320 200" stroke="#B5481C" stroke-width="1.5" fill="none" opacity="0.6"/>
+      <path d="M 700 110 Q 700 160 1080 200" stroke="#B5481C" stroke-width="1.5" fill="none" opacity="0.6"/>
+
+      <!-- LEFT branch (Cá nhân) to 8 areas -->
+      <!-- Hub center approx (320, 220) -->
+      <!-- 8 area boxes at x=40, y from 290 to 850, height 60, gap 20 -->
+      <!-- Each line: from (320, 220) to (240, area_center_y) -->
+      <path d="M 280 240 Q 220 260 200 320" stroke="#5B4A9F" stroke-width="1" fill="none" opacity="0.45"/>
+      <path d="M 280 240 Q 200 280 200 400" stroke="#B5481C" stroke-width="1" fill="none" opacity="0.45"/>
+      <path d="M 280 240 Q 180 320 200 480" stroke="#A33863" stroke-width="1" fill="none" opacity="0.45"/>
+      <path d="M 280 240 Q 160 380 200 560" stroke="#8A5A14" stroke-width="1" fill="none" opacity="0.45"/>
+      <path d="M 280 240 Q 160 460 200 640" stroke="#4F6E1E" stroke-width="1" fill="none" opacity="0.45"/>
+      <path d="M 280 240 Q 180 540 200 720" stroke="#0F6E56" stroke-width="1" fill="none" opacity="0.45"/>
+      <path d="M 280 240 Q 200 620 200 800" stroke="#1E5A8E" stroke-width="1" fill="none" opacity="0.45"/>
+      <path d="M 280 240 Q 220 700 200 880" stroke="#9B2929" stroke-width="1" fill="none" opacity="0.45"/>
+
+      <!-- RIGHT branch (Doanh nghiệp) to 8 areas -->
+      <!-- Hub center (1080, 220), areas at right side x=1200 -->
+      <path d="M 1120 240 Q 1180 260 1200 320" stroke="#1E5A8E" stroke-width="1" fill="none" opacity="0.45"/>
+      <path d="M 1120 240 Q 1200 280 1200 400" stroke="#B5481C" stroke-width="1" fill="none" opacity="0.45"/>
+      <path d="M 1120 240 Q 1220 320 1200 480" stroke="#A33863" stroke-width="1" fill="none" opacity="0.45"/>
+      <path d="M 1120 240 Q 1240 380 1200 560" stroke="#4F6E1E" stroke-width="1" fill="none" opacity="0.45"/>
+      <path d="M 1120 240 Q 1240 460 1200 640" stroke="#8A5A14" stroke-width="1" fill="none" opacity="0.45"/>
+      <path d="M 1120 240 Q 1220 540 1200 720" stroke="#5B4A9F" stroke-width="1" fill="none" opacity="0.45"/>
+      <path d="M 1120 240 Q 1200 620 1200 800" stroke="#0F6E56" stroke-width="1" fill="none" opacity="0.45"/>
+      <path d="M 1120 240 Q 1180 700 1200 880" stroke="#9B2929" stroke-width="1" fill="none" opacity="0.45"/>
+
+
+      <!-- ===== ROOT NODE ===== -->
+      <g>
+        <rect x="580" y="40" width="240" height="76" rx="38" fill="#1A1A1A"/>
+        <text class="t-root-title" x="700" y="78" text-anchor="middle">AI 2026</text>
+        <text class="t-root-sub" x="700" y="98" text-anchor="middle">Bức tranh tổng quan</text>
+      </g>
+
+
+      <!-- ===== BRANCH HUBS ===== -->
+
+      <!-- Left hub: Cá nhân -->
+      <g>
+        <rect x="200" y="190" width="240" height="68" rx="34" fill="#5B4A9F"/>
+        <text class="t-branch" x="320" y="222" text-anchor="middle">Cá nhân</text>
+        <text class="t-branch-sub" x="320" y="242" text-anchor="middle">Dùng hằng ngày · trả tháng</text>
+      </g>
+
+      <!-- Right hub: Doanh nghiệp -->
+      <g>
+        <rect x="960" y="190" width="240" height="68" rx="34" fill="#0F6E56"/>
+        <text class="t-branch" x="1080" y="222" text-anchor="middle">Doanh nghiệp</text>
+        <text class="t-branch-sub" x="1080" y="242" text-anchor="middle">Tích hợp · bảo mật · audit</text>
+      </g>
+
+
+      <!-- ===== LEFT AREAS (Cá nhân) — 8 boxes ===== -->
+      <!-- Each box: x=40, width=320, height=60, rounded -->
+
+      <!-- Area 1: Trợ lý hội thoại -->
+      <g>
+        <rect x="40" y="290" width="320" height="60" rx="8" fill="#ECE9F5" stroke="#5B4A9F" stroke-width="0.5"/>
+        <rect x="40" y="290" width="4" height="60" rx="2" fill="#5B4A9F"/>
+        <text class="t-area" x="56" y="312" fill="#5B4A9F">Trợ lý hội thoại</text>
+        <text class="t-tools" x="56" y="328">ChatGPT · Claude · Gemini · Copilot</text>
+        <text class="t-tech" x="56" y="342">LLM · RLHF</text>
+      </g>
+
+      <!-- Area 2: Sinh ảnh & thiết kế -->
+      <g>
+        <rect x="40" y="370" width="320" height="60" rx="8" fill="#F4E4DC" stroke="#B5481C" stroke-width="0.5"/>
+        <rect x="40" y="370" width="4" height="60" rx="2" fill="#B5481C"/>
+        <text class="t-area" x="56" y="392" fill="#B5481C">Sinh ảnh &amp; thiết kế</text>
+        <text class="t-tools" x="56" y="408">Midjourney · DALL·E · Flux · Ideogram</text>
+        <text class="t-tech" x="56" y="422">Diffusion · CLIP</text>
+      </g>
+
+      <!-- Area 3: Video & âm thanh -->
+      <g>
+        <rect x="40" y="450" width="320" height="60" rx="8" fill="#F5E3EB" stroke="#A33863" stroke-width="0.5"/>
+        <rect x="40" y="450" width="4" height="60" rx="2" fill="#A33863"/>
+        <text class="t-area" x="56" y="472" fill="#A33863">Video &amp; âm thanh</text>
+        <text class="t-tools" x="56" y="488">Sora · Runway · ElevenLabs · Suno</text>
+        <text class="t-tech" x="56" y="502">Video diffusion · TTS</text>
+      </g>
+
+      <!-- Area 4: Lập trình -->
+      <g>
+        <rect x="40" y="530" width="320" height="60" rx="8" fill="#F4E7CC" stroke="#8A5A14" stroke-width="0.5"/>
+        <rect x="40" y="530" width="4" height="60" rx="2" fill="#8A5A14"/>
+        <text class="t-area" x="56" y="552" fill="#8A5A14">Lập trình hỗ trợ</text>
+        <text class="t-tools" x="56" y="568">Cursor · Copilot · Claude Code · v0</text>
+        <text class="t-tech" x="56" y="582">Code LLM · Agent</text>
+      </g>
+
+      <!-- Area 5: Năng suất -->
+      <g>
+        <rect x="40" y="610" width="320" height="60" rx="8" fill="#EBF1DC" stroke="#4F6E1E" stroke-width="0.5"/>
+        <rect x="40" y="610" width="4" height="60" rx="2" fill="#4F6E1E"/>
+        <text class="t-area" x="56" y="632" fill="#4F6E1E">Năng suất cá nhân</text>
+        <text class="t-tools" x="56" y="648">Notion AI · Grammarly · Motion · Mem</text>
+        <text class="t-tech" x="56" y="662">LLM · Embedding</text>
+      </g>
+
+      <!-- Area 6: Tìm kiếm -->
+      <g>
+        <rect x="40" y="690" width="320" height="60" rx="8" fill="#DFEFE9" stroke="#0F6E56" stroke-width="0.5"/>
+        <rect x="40" y="690" width="4" height="60" rx="2" fill="#0F6E56"/>
+        <text class="t-area" x="56" y="712" fill="#0F6E56">Tìm kiếm &amp; nghiên cứu</text>
+        <text class="t-tools" x="56" y="728">Perplexity · You.com · Elicit · Consensus</text>
+        <text class="t-tech" x="56" y="742">RAG · Web search</text>
+      </g>
+
+      <!-- Area 7: Học tập & sức khỏe -->
+      <g>
+        <rect x="40" y="770" width="320" height="60" rx="8" fill="#E8F0F7" stroke="#1E5A8E" stroke-width="0.5"/>
+        <rect x="40" y="770" width="4" height="60" rx="2" fill="#1E5A8E"/>
+        <text class="t-area" x="56" y="792" fill="#1E5A8E">Học tập &amp; sức khỏe</text>
+        <text class="t-tools" x="56" y="808">Khanmigo · Duolingo Max · Ada · Wysa</text>
+        <text class="t-tech" x="56" y="822">LLM fine-tune</text>
+      </g>
+
+      <!-- Area 8: Agent cá nhân -->
+      <g>
+        <rect x="40" y="850" width="320" height="60" rx="8" fill="#F5DCDC" stroke="#9B2929" stroke-width="0.5"/>
+        <rect x="40" y="850" width="4" height="60" rx="2" fill="#9B2929"/>
+        <text class="t-area" x="56" y="872" fill="#9B2929">Agent cá nhân</text>
+        <text class="t-tools" x="56" y="888">Claude Cowork · Operator · Manus · Comet</text>
+        <text class="t-tech" x="56" y="902">Tool use · Browser · MCP</text>
+      </g>
+
+
+      <!-- ===== RIGHT AREAS (Doanh nghiệp) — 8 boxes ===== -->
+      <!-- Each box: x=1040, width=320, height=60 -->
+
+      <!-- Area 1: CSKH -->
+      <g>
+        <rect x="1040" y="290" width="320" height="60" rx="8" fill="#E8F0F7" stroke="#1E5A8E" stroke-width="0.5"/>
+        <rect x="1356" y="290" width="4" height="60" rx="2" fill="#1E5A8E"/>
+        <text class="t-area" x="1344" y="312" text-anchor="end" fill="#1E5A8E">Chăm sóc khách hàng</text>
+        <text class="t-tools" x="1344" y="328" text-anchor="end">Intercom Fin · Zendesk AI · Einstein · Drift</text>
+        <text class="t-tech" x="1344" y="342" text-anchor="end">LLM + RAG · NLU</text>
+      </g>
+
+      <!-- Area 2: Marketing -->
+      <g>
+        <rect x="1040" y="370" width="320" height="60" rx="8" fill="#F4E4DC" stroke="#B5481C" stroke-width="0.5"/>
+        <rect x="1356" y="370" width="4" height="60" rx="2" fill="#B5481C"/>
+        <text class="t-area" x="1344" y="392" text-anchor="end" fill="#B5481C">Marketing &amp; sáng tạo</text>
+        <text class="t-tools" x="1344" y="408" text-anchor="end">Canva AI · Firefly · Jasper · Runway</text>
+        <text class="t-tech" x="1344" y="422" text-anchor="end">Multimodal · Fine-tune</text>
+      </g>
+
+      <!-- Area 3: Họp -->
+      <g>
+        <rect x="1040" y="450" width="320" height="60" rx="8" fill="#F5E3EB" stroke="#A33863" stroke-width="0.5"/>
+        <rect x="1356" y="450" width="4" height="60" rx="2" fill="#A33863"/>
+        <text class="t-area" x="1344" y="472" text-anchor="end" fill="#A33863">Họp &amp; ghi chú</text>
+        <text class="t-tools" x="1344" y="488" text-anchor="end">Otter · Fireflies · Fathom · Zoom AI</text>
+        <text class="t-tech" x="1344" y="502" text-anchor="end">ASR · LLM summary</text>
+      </g>
+
+      <!-- Area 4: Nền tảng xây AI -->
+      <g>
+        <rect x="1040" y="530" width="320" height="60" rx="8" fill="#EBF1DC" stroke="#4F6E1E" stroke-width="0.5"/>
+        <rect x="1356" y="530" width="4" height="60" rx="2" fill="#4F6E1E"/>
+        <text class="t-area" x="1344" y="552" text-anchor="end" fill="#4F6E1E">Nền tảng xây AI</text>
+        <text class="t-tools" x="1344" y="568" text-anchor="end">Bedrock · Vertex · LangChain · LlamaIndex</text>
+        <text class="t-tech" x="1344" y="582" text-anchor="end">MLOps · Vector DB</text>
+      </g>
+
+      <!-- Area 5: Văn phòng -->
+      <g>
+        <rect x="1040" y="610" width="320" height="60" rx="8" fill="#F4E7CC" stroke="#8A5A14" stroke-width="0.5"/>
+        <rect x="1356" y="610" width="4" height="60" rx="2" fill="#8A5A14"/>
+        <text class="t-area" x="1344" y="632" text-anchor="end" fill="#8A5A14">Văn phòng &amp; tài liệu</text>
+        <text class="t-tools" x="1344" y="648" text-anchor="end">M365 Copilot · Workspace · Glean</text>
+        <text class="t-tech" x="1344" y="662" text-anchor="end">RAG nội bộ · Search</text>
+      </g>
+
+      <!-- Area 6: BI -->
+      <g>
+        <rect x="1040" y="690" width="320" height="60" rx="8" fill="#ECE9F5" stroke="#5B4A9F" stroke-width="0.5"/>
+        <rect x="1356" y="690" width="4" height="60" rx="2" fill="#5B4A9F"/>
+        <text class="t-area" x="1344" y="712" text-anchor="end" fill="#5B4A9F">Phân tích &amp; BI</text>
+        <text class="t-tools" x="1344" y="728" text-anchor="end">Tableau Pulse · Power BI · Hex · Julius</text>
+        <text class="t-tech" x="1344" y="742" text-anchor="end">ML · NL2SQL</text>
+      </g>
+
+      <!-- Area 7: Tự động hóa -->
+      <g>
+        <rect x="1040" y="770" width="320" height="60" rx="8" fill="#DFEFE9" stroke="#0F6E56" stroke-width="0.5"/>
+        <rect x="1356" y="770" width="4" height="60" rx="2" fill="#0F6E56"/>
+        <text class="t-area" x="1344" y="792" text-anchor="end" fill="#0F6E56">Tự động hóa quy trình</text>
+        <text class="t-tools" x="1344" y="808" text-anchor="end">n8n · Zapier AI · Make · UiPath</text>
+        <text class="t-tech" x="1344" y="822" text-anchor="end">Agent + API · Workflow</text>
+      </g>
+
+      <!-- Area 8: Ngành dọc -->
+      <g>
+        <rect x="1040" y="850" width="320" height="60" rx="8" fill="#F5DCDC" stroke="#9B2929" stroke-width="0.5"/>
+        <rect x="1356" y="850" width="4" height="60" rx="2" fill="#9B2929"/>
+        <text class="t-area" x="1344" y="872" text-anchor="end" fill="#9B2929">Ngành dọc chuyên sâu</text>
+        <text class="t-tools" x="1344" y="888" text-anchor="end">Harvey · Gong · Clay · BloombergGPT</text>
+        <text class="t-tech" x="1344" y="902" text-anchor="end">Domain LLM · Retrieval</text>
+      </g>
+
+
+      <!-- ===== CENTER LABELS (between two columns) ===== -->
+      <!-- Subtle dividers/labels showing the 8 themes in the middle -->
+
+      <g opacity="0.7">
+        <text class="serif" x="700" y="324" text-anchor="middle" font-family="Fraunces, serif" font-size="11px" font-style="italic" fill="#807E78" letter-spacing="0.1em">— hội thoại —</text>
+        <text class="serif" x="700" y="404" text-anchor="middle" font-family="Fraunces, serif" font-size="11px" font-style="italic" fill="#807E78" letter-spacing="0.1em">— hình ảnh —</text>
+        <text class="serif" x="700" y="484" text-anchor="middle" font-family="Fraunces, serif" font-size="11px" font-style="italic" fill="#807E78" letter-spacing="0.1em">— âm thanh / họp —</text>
+        <text class="serif" x="700" y="564" text-anchor="middle" font-family="Fraunces, serif" font-size="11px" font-style="italic" fill="#807E78" letter-spacing="0.1em">— code / build —</text>
+        <text class="serif" x="700" y="644" text-anchor="middle" font-family="Fraunces, serif" font-size="11px" font-style="italic" fill="#807E78" letter-spacing="0.1em">— năng suất —</text>
+        <text class="serif" x="700" y="724" text-anchor="middle" font-family="Fraunces, serif" font-size="11px" font-style="italic" fill="#807E78" letter-spacing="0.1em">— tri thức / dữ liệu —</text>
+        <text class="serif" x="700" y="804" text-anchor="middle" font-family="Fraunces, serif" font-size="11px" font-style="italic" fill="#807E78" letter-spacing="0.1em">— agent / tự động —</text>
+        <text class="serif" x="700" y="884" text-anchor="middle" font-family="Fraunces, serif" font-size="11px" font-style="italic" fill="#807E78" letter-spacing="0.1em">— ngành dọc —</text>
+      </g>
+
+    </svg>
+
+  </div>
+
+  <!-- FOUNDATION FOOTER -->
+  <div class="foundation">
+    <div class="foundation-title">
+      6 kỹ thuật nền tảng — lõi của mọi tool ở trên
+    </div>
+    <div class="foundation-grid">
+      <div class="found-item f1">
+        <div class="found-letter">L</div>
+        <div class="found-text"><strong>LLM</strong><span>Mô hình ngôn ngữ lớn</span></div>
+      </div>
+      <div class="found-item f2">
+        <div class="found-letter">D</div>
+        <div class="found-text"><strong>Diffusion</strong><span>Sinh ảnh, video</span></div>
+      </div>
+      <div class="found-item f3">
+        <div class="found-letter">A</div>
+        <div class="found-text"><strong>ASR / TTS</strong><span>Giọng nói ↔ văn bản</span></div>
+      </div>
+      <div class="found-item f4">
+        <div class="found-letter">E</div>
+        <div class="found-text"><strong>Embedding</strong><span>Tìm theo ý nghĩa</span></div>
+      </div>
+      <div class="found-item f5">
+        <div class="found-letter">R</div>
+        <div class="found-text"><strong>RAG</strong><span>Lấy tài liệu, trả lời</span></div>
+      </div>
+      <div class="found-item f6">
+        <div class="found-letter">G</div>
+        <div class="found-text"><strong>Agent</strong><span>Tự gọi tool, làm việc</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- EXPLAIN SECTION -->
+  <div class="explain">
+    <div class="explain-title">
+      Giải thích nhanh <em>từng kỹ thuật</em>
+    </div>
+
+    <div class="explain-grid">
+
+      <div class="explain-item e1">
+        <div class="explain-item-head">
+          <span class="explain-item-letter">L</span>
+          <span class="explain-item-name">LLM</span>
+        </div>
+        <div class="explain-item-full">Large Language Model</div>
+        <div class="explain-item-body">
+          Mô hình học từ <strong>hàng nghìn tỷ chữ</strong> trên internet và sách, đoán chữ tiếp theo dựa trên ngữ cảnh. Kết quả: viết, hiểu, dịch, suy luận như người. Là "bộ não" của ChatGPT, Claude, Gemini.
+        </div>
+      </div>
+
+      <div class="explain-item e2">
+        <div class="explain-item-head">
+          <span class="explain-item-letter">D</span>
+          <span class="explain-item-name">Diffusion</span>
+        </div>
+        <div class="explain-item-full">Sinh ảnh / video</div>
+        <div class="explain-item-body">
+          Bắt đầu từ <strong>nhiễu ngẫu nhiên</strong>, mô hình từ từ "khử nhiễu" để hiện ra ảnh khớp với mô tả. Như nặn tượng từ khối đá thô. Tạo ảnh Midjourney, video Sora đều theo cách này.
+        </div>
+      </div>
+
+      <div class="explain-item e3">
+        <div class="explain-item-head">
+          <span class="explain-item-letter">A</span>
+          <span class="explain-item-name">ASR / TTS</span>
+        </div>
+        <div class="explain-item-full">Giọng nói ↔ văn bản</div>
+        <div class="explain-item-body">
+          <strong>ASR</strong> nghe giọng nói → ra văn bản (Whisper, Otter). <strong>TTS</strong> ngược lại: văn bản → giọng nói tự nhiên (ElevenLabs). Có thể clone giọng từ vài giây mẫu.
+        </div>
+      </div>
+
+      <div class="explain-item e4">
+        <div class="explain-item-head">
+          <span class="explain-item-letter">E</span>
+          <span class="explain-item-name">Embedding</span>
+        </div>
+        <div class="explain-item-full">Tìm theo ý nghĩa</div>
+        <div class="explain-item-body">
+          Biến mỗi câu/tài liệu thành <strong>một dãy số</strong> biểu diễn ý nghĩa. Câu cùng nghĩa thì số gần nhau. Nhờ đó tìm "xe hơi giá rẻ" cũng ra được "ô tô giá thấp", không cần khớp từ.
+        </div>
+      </div>
+
+      <div class="explain-item e5">
+        <div class="explain-item-head">
+          <span class="explain-item-letter">R</span>
+          <span class="explain-item-name">RAG</span>
+        </div>
+        <div class="explain-item-full">Retrieval Augmented Generation</div>
+        <div class="explain-item-body">
+          Trước khi LLM trả lời, hệ thống <strong>lấy tài liệu liên quan</strong> từ kho nội bộ (dùng Embedding) rồi đưa kèm câu hỏi cho LLM. Nhờ đó AI biết thông tin riêng của công ty bạn, không "bịa".
+        </div>
+      </div>
+
+      <div class="explain-item e6">
+        <div class="explain-item-head">
+          <span class="explain-item-letter">G</span>
+          <span class="explain-item-name">Agent</span>
+        </div>
+        <div class="explain-item-full">Tool use &amp; autonomy</div>
+        <div class="explain-item-body">
+          LLM không chỉ trả lời, mà <strong>tự quyết định gọi tool</strong>: tìm web, đọc email, đặt vé, chạy code. Lặp đi lặp lại đến khi xong việc. Đây là làn sóng nóng nhất 2025–2026.
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Glossary: các thuật ngữ phụ xuất hiện trong sơ đồ -->
+    <div class="glossary">
+      <div class="glossary-title">Các <em>thuật ngữ khác</em> trong sơ đồ</div>
+      <div class="glossary-grid">
+
+        <div class="glossary-row">
+          <span class="glossary-term">RLHF</span>
+          <span class="glossary-def">Huấn luyện LLM bằng phản hồi của con người để câu trả lời "đúng ý" hơn.</span>
+        </div>
+
+        <div class="glossary-row">
+          <span class="glossary-term">CLIP</span>
+          <span class="glossary-def">Mô hình hiểu được cả ảnh và chữ. Là "cây cầu" giúp Diffusion vẽ đúng mô tả.</span>
+        </div>
+
+        <div class="glossary-row">
+          <span class="glossary-term">Fine-tuning</span>
+          <span class="glossary-def">Huấn luyện thêm mô hình có sẵn trên dữ liệu chuyên ngành để giỏi việc cụ thể.</span>
+        </div>
+
+        <div class="glossary-row">
+          <span class="glossary-term">Multimodal</span>
+          <span class="glossary-def">Mô hình xử lý được nhiều kiểu dữ liệu cùng lúc: chữ, ảnh, video, âm thanh.</span>
+        </div>
+
+        <div class="glossary-row">
+          <span class="glossary-term">NLU</span>
+          <span class="glossary-def">Hiểu ngôn ngữ tự nhiên — nhận ra ý định người dùng (đặt hàng, khiếu nại...).</span>
+        </div>
+
+        <div class="glossary-row">
+          <span class="glossary-term">NL2SQL</span>
+          <span class="glossary-def">Chuyển câu hỏi tiếng Việt/Anh thành câu lệnh SQL để truy vấn cơ sở dữ liệu.</span>
+        </div>
+
+        <div class="glossary-row">
+          <span class="glossary-term">Vector DB</span>
+          <span class="glossary-def">Cơ sở dữ liệu lưu Embedding, cho phép tìm kiếm theo ý nghĩa cực nhanh.</span>
+        </div>
+
+        <div class="glossary-row">
+          <span class="glossary-term">MLOps</span>
+          <span class="glossary-def">Quy trình triển khai, giám sát và bảo trì mô hình AI trong môi trường thật.</span>
+        </div>
+
+        <div class="glossary-row">
+          <span class="glossary-term">MCP</span>
+          <span class="glossary-def">Chuẩn mở giúp Agent kết nối với các app khác (email, lịch, Drive...) thống nhất.</span>
+        </div>
+
+        <div class="glossary-row">
+          <span class="glossary-term">Workflow LLM</span>
+          <span class="glossary-def">LLM được nhúng vào chuỗi bước nghiệp vụ tự động, gọi API qua nhiều giai đoạn.</span>
+        </div>
+
+        <div class="glossary-row">
+          <span class="glossary-term">Browser agent</span>
+          <span class="glossary-def">Agent điều khiển trình duyệt như người: click, gõ, điền form, đặt vé.</span>
+        </div>
+
+        <div class="glossary-row">
+          <span class="glossary-term">Enterprise search</span>
+          <span class="glossary-def">Tìm kiếm xuyên suốt toàn bộ dữ liệu công ty: file, email, chat, ticket.</span>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ===== AGENTIC AI SECTION ===== -->
+  <div class="agentic">
+
+    <div class="agentic-header">
+      <span class="agentic-tag">Xu hướng 2025–2026</span>
+    </div>
+    <h2 class="agentic-title serif">AI <em>Agentic</em> — bước nhảy lớn nhất hiện nay</h2>
+    <p class="agentic-lead">
+      Từ "AI trả lời câu hỏi" sang "AI tự làm việc". Không chỉ tư vấn — mà tự lên kế hoạch, gọi tool,
+      kiểm tra kết quả, tự sửa sai, lặp lại đến khi xong việc.
+    </p>
+
+    <!-- So sánh AI truyền thống vs Agentic -->
+    <div class="agentic-compare">
+
+      <div class="compare-card before">
+        <div class="compare-label">AI truyền thống</div>
+        <div class="compare-title serif">Hỏi — đáp một lượt</div>
+        <ul class="compare-list">
+          <li>Bạn hỏi, AI trả lời rồi dừng</li>
+          <li>Mỗi lần một câu, không nhớ ngữ cảnh dài</li>
+          <li>Không tự làm gì ngoài chat</li>
+          <li>Cần người ra lệnh từng bước</li>
+          <li>Ví dụ: ChatGPT bản đầu, Google Translate</li>
+        </ul>
+      </div>
+
+      <div class="compare-card after">
+        <div class="compare-label">AI Agentic</div>
+        <div class="compare-title serif">Giao việc — tự hoàn thành</div>
+        <ul class="compare-list">
+          <li>Bạn giao mục tiêu, AI tự chia nhỏ &amp; làm</li>
+          <li>Tự quyết định bước tiếp theo</li>
+          <li>Gọi web, app, API, chạy code</li>
+          <li>Tự kiểm tra, tự sửa khi sai</li>
+          <li>Ví dụ: Claude Code, Manus, Operator</li>
+        </ul>
+      </div>
+
+    </div>
+
+    <!-- Vòng lặp agentic -->
+    <div class="agentic-loop-section">
+      <div class="agentic-section-title">Vòng lặp hoạt động của một Agent</div>
+      <div class="loop-diagram">
+
+        <svg viewBox="0 0 1000 200" xmlns="http://www.w3.org/2000/svg" style="width:100%; height:auto;">
+
+          <defs>
+            <marker id="arr-orange" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+              <path d="M2 1L8 5L2 9" fill="none" stroke="#B5481C" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </marker>
+          </defs>
+
+          <!-- Box 1: Mục tiêu -->
+          <g>
+            <rect x="20" y="60" width="140" height="80" rx="8" fill="#FFFFFF" stroke="#B5481C" stroke-width="1"/>
+            <text x="90" y="92" text-anchor="middle" font-family="Fraunces, serif" font-size="13px" font-weight="500" fill="#B5481C" font-style="italic">Mục tiêu</text>
+            <text x="90" y="112" text-anchor="middle" font-family="Inter, sans-serif" font-size="11px" fill="#4A4A48">Người dùng giao việc</text>
+          </g>
+
+          <!-- Arrow 1 -->
+          <line x1="170" y1="100" x2="200" y2="100" stroke="#B5481C" stroke-width="1.5" marker-end="url(#arr-orange)"/>
+
+          <!-- Box 2: Lập kế hoạch -->
+          <g>
+            <rect x="210" y="60" width="140" height="80" rx="8" fill="#F4E4DC" stroke="#B5481C" stroke-width="0.5"/>
+            <text x="280" y="86" text-anchor="middle" font-family="Fraunces, serif" font-size="13px" font-weight="500" fill="#B5481C">1. Lập kế hoạch</text>
+            <text x="280" y="106" text-anchor="middle" font-family="Inter, sans-serif" font-size="11px" fill="#4A4A48">Chia nhỏ thành</text>
+            <text x="280" y="120" text-anchor="middle" font-family="Inter, sans-serif" font-size="11px" fill="#4A4A48">các bước</text>
+          </g>
+
+          <line x1="360" y1="100" x2="390" y2="100" stroke="#B5481C" stroke-width="1.5" marker-end="url(#arr-orange)"/>
+
+          <!-- Box 3: Hành động -->
+          <g>
+            <rect x="400" y="60" width="140" height="80" rx="8" fill="#F4E4DC" stroke="#B5481C" stroke-width="0.5"/>
+            <text x="470" y="86" text-anchor="middle" font-family="Fraunces, serif" font-size="13px" font-weight="500" fill="#B5481C">2. Hành động</text>
+            <text x="470" y="106" text-anchor="middle" font-family="Inter, sans-serif" font-size="11px" fill="#4A4A48">Gọi tool, API,</text>
+            <text x="470" y="120" text-anchor="middle" font-family="Inter, sans-serif" font-size="11px" fill="#4A4A48">duyệt web, chạy code</text>
+          </g>
+
+          <line x1="550" y1="100" x2="580" y2="100" stroke="#B5481C" stroke-width="1.5" marker-end="url(#arr-orange)"/>
+
+          <!-- Box 4: Quan sát -->
+          <g>
+            <rect x="590" y="60" width="140" height="80" rx="8" fill="#F4E4DC" stroke="#B5481C" stroke-width="0.5"/>
+            <text x="660" y="86" text-anchor="middle" font-family="Fraunces, serif" font-size="13px" font-weight="500" fill="#B5481C">3. Quan sát</text>
+            <text x="660" y="106" text-anchor="middle" font-family="Inter, sans-serif" font-size="11px" fill="#4A4A48">Xem kết quả,</text>
+            <text x="660" y="120" text-anchor="middle" font-family="Inter, sans-serif" font-size="11px" fill="#4A4A48">đánh giá đúng/sai</text>
+          </g>
+
+          <line x1="740" y1="100" x2="770" y2="100" stroke="#B5481C" stroke-width="1.5" marker-end="url(#arr-orange)"/>
+
+          <!-- Box 5: Hoàn thành -->
+          <g>
+            <rect x="780" y="60" width="140" height="80" rx="8" fill="#FFFFFF" stroke="#0F6E56" stroke-width="1"/>
+            <text x="850" y="92" text-anchor="middle" font-family="Fraunces, serif" font-size="13px" font-weight="500" fill="#0F6E56" font-style="italic">Hoàn thành</text>
+            <text x="850" y="112" text-anchor="middle" font-family="Inter, sans-serif" font-size="11px" fill="#4A4A48">Báo cáo kết quả</text>
+          </g>
+
+          <!-- Loop back arrow (nếu chưa xong, quay lại bước 1) -->
+          <path d="M 660 60 Q 660 25 470 25 Q 280 25 280 60" fill="none" stroke="#B5481C" stroke-width="1" stroke-dasharray="4 3" marker-end="url(#arr-orange)" opacity="0.7"/>
+          <text x="470" y="18" text-anchor="middle" font-family="Fraunces, serif" font-size="11px" font-style="italic" fill="#B5481C">Chưa xong? Lặp lại</text>
+
+          <!-- Loop label dưới -->
+          <text x="470" y="175" text-anchor="middle" font-family="Inter, sans-serif" font-size="11px" fill="#807E78" letter-spacing="0.04em">Lặp đi lặp lại tự động — không cần người can thiệp từng bước</text>
+
+        </svg>
+
+      </div>
+    </div>
+
+    <!-- 5 cấp độ tự chủ -->
+    <div class="agentic-loop-section">
+      <div class="agentic-section-title">5 cấp độ tự chủ của AI Agent</div>
+      <div class="agentic-levels">
+
+        <div class="level-card l1">
+          <div class="level-num">Cấp 1</div>
+          <div class="level-name serif">Chatbot</div>
+          <div class="level-desc">Trả lời câu hỏi. Không nhớ, không tự làm gì.</div>
+        </div>
+
+        <div class="level-card l2">
+          <div class="level-num">Cấp 2</div>
+          <div class="level-name serif">Copilot</div>
+          <div class="level-desc">Gợi ý, đề xuất, người vẫn quyết định và thực thi.</div>
+        </div>
+
+        <div class="level-card l3">
+          <div class="level-num">Cấp 3</div>
+          <div class="level-name serif">Agent đơn giản</div>
+          <div class="level-desc">Tự gọi tool theo việc cụ thể, có giám sát.</div>
+        </div>
+
+        <div class="level-card l4">
+          <div class="level-num">Cấp 4</div>
+          <div class="level-name serif">Agent tự chủ</div>
+          <div class="level-desc">Tự lập kế hoạch nhiều bước, tự sửa sai. Đang ở đây.</div>
+        </div>
+
+        <div class="level-card l5">
+          <div class="level-num">Cấp 5</div>
+          <div class="level-name serif">Multi-agent</div>
+          <div class="level-desc">Nhiều agent phối hợp như một đội. Còn sơ khai.</div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- 3 ví dụ thực tế -->
+    <div>
+      <div class="agentic-section-title">Ba ví dụ thực tế</div>
+      <div class="agentic-examples">
+
+        <div class="example-card">
+          <div class="example-icon">A</div>
+          <div class="example-title serif">Đặt vé du lịch</div>
+          <div class="example-flow">
+            <span class="step"><span class="step-num">1.</span>Bạn nói: "Đặt chuyến Hà Nội–Đà Nẵng cuối tuần"</span>
+            <span class="step"><span class="step-num">2.</span>Agent tự mở web hãng bay, so giá</span>
+            <span class="step"><span class="step-num">3.</span>Chọn chuyến hợp nhất, điền form</span>
+            <span class="step"><span class="step-num">4.</span>Hỏi bạn xác nhận thanh toán</span>
+          </div>
+        </div>
+
+        <div class="example-card">
+          <div class="example-icon">B</div>
+          <div class="example-title serif">Lập trình một feature</div>
+          <div class="example-flow">
+            <span class="step"><span class="step-num">1.</span>Bạn nói: "Thêm chức năng login bằng Google"</span>
+            <span class="step"><span class="step-num">2.</span>Agent đọc code, lập plan</span>
+            <span class="step"><span class="step-num">3.</span>Viết code, chạy test, sửa lỗi</span>
+            <span class="step"><span class="step-num">4.</span>Tạo pull request để bạn duyệt</span>
+          </div>
+        </div>
+
+        <div class="example-card">
+          <div class="example-icon">C</div>
+          <div class="example-title serif">Phân tích báo cáo bán hàng</div>
+          <div class="example-flow">
+            <span class="step"><span class="step-num">1.</span>Bạn nói: "Sao doanh thu Q2 giảm?"</span>
+            <span class="step"><span class="step-num">2.</span>Agent truy vấn database, lấy số</span>
+            <span class="step"><span class="step-num">3.</span>So sánh, vẽ biểu đồ, tìm pattern</span>
+            <span class="step"><span class="step-num">4.</span>Viết báo cáo, đưa kết luận</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ===== BUZZWORDS / TRENDING TERMS ===== -->
+  <div class="buzzwords">
+
+    <div class="buzzwords-header">
+      <span class="buzzwords-tag">Thuật ngữ thời thượng</span>
+    </div>
+    <h2 class="buzzwords-title serif">Những từ <em>đang hot</em> trên báo, X, LinkedIn</h2>
+    <p class="buzzwords-lead">Sếp nên biết để theo kịp khi đối tác hoặc đối thủ nhắc tới</p>
+
+    <div class="buzzwords-grid">
+
+      <div class="buzzword-card b1">
+        <div class="buzzword-head">
+          <span class="buzzword-name">Vibe coding</span>
+          <span class="buzzword-pron">/vai-bờ co-đing/</span>
+          <span class="buzzword-hot">Cực hot</span>
+        </div>
+        <div class="buzzword-body">
+          Lập trình bằng cách <strong>"cảm hứng"</strong>: chỉ mô tả ý tưởng cho AI, không cần viết code, không cần đọc kỹ code AI viết ra — cứ chạy thử, sai thì bảo AI sửa. Andrej Karpathy đặt tên này 2025.
+        </div>
+        <div class="buzzword-example">"Tôi vibe-code xong cái app trong 2 tiếng, chưa đọc 1 dòng code"</div>
+      </div>
+
+      <div class="buzzword-card b2">
+        <div class="buzzword-head">
+          <span class="buzzword-name">Prompt engineering</span>
+          <span class="buzzword-hot">Hot</span>
+        </div>
+        <div class="buzzword-body">
+          Kỹ năng <strong>viết câu lệnh</strong> cho AI để ra kết quả tốt nhất. Từng được gọi là "nghề mới lương cao", giờ thành kỹ năng cơ bản ai cũng cần.
+        </div>
+        <div class="buzzword-example">"Cần prompt engineer giỏi để tinh chỉnh chatbot CSKH"</div>
+      </div>
+
+      <div class="buzzword-card b3">
+        <div class="buzzword-head">
+          <span class="buzzword-name">Context engineering</span>
+          <span class="buzzword-hot">Mới 2025</span>
+        </div>
+        <div class="buzzword-body">
+          Bước tiến của Prompt engineering: thiết kế <strong>toàn bộ ngữ cảnh</strong> đưa cho AI — gồm tài liệu, ví dụ, quy tắc, tool — không chỉ một câu lệnh.
+        </div>
+        <div class="buzzword-example">"Vấn đề không phải prompt, mà là context bạn cung cấp"</div>
+      </div>
+
+      <div class="buzzword-card b4">
+        <div class="buzzword-head">
+          <span class="buzzword-name">Hallucination</span>
+          <span class="buzzword-pron">"ảo giác"</span>
+        </div>
+        <div class="buzzword-body">
+          AI <strong>bịa thông tin</strong> nghe rất hợp lý nhưng sai. Ví dụ chế ra luật không tồn tại, trích dẫn sách không có. Lý do chính phải dùng RAG cho doanh nghiệp.
+        </div>
+        <div class="buzzword-example">"Kiểm tra kỹ, ChatGPT hay hallucinate lắm"</div>
+      </div>
+
+      <div class="buzzword-card b5">
+        <div class="buzzword-head">
+          <span class="buzzword-name">AGI</span>
+          <span class="buzzword-pron">Artificial General Intelligence</span>
+        </div>
+        <div class="buzzword-body">
+          AI <strong>thông minh tổng quát</strong> ngang con người ở mọi việc — không chỉ giỏi một lĩnh vực. Là mục tiêu cuối của OpenAI, Anthropic, Google. Chưa đạt, tranh cãi khi nào đạt.
+        </div>
+        <div class="buzzword-example">"OpenAI tuyên bố sắp đạt AGI trong vài năm tới"</div>
+      </div>
+
+      <div class="buzzword-card b6">
+        <div class="buzzword-head">
+          <span class="buzzword-name">Open-source AI</span>
+        </div>
+        <div class="buzzword-body">
+          Mô hình AI <strong>mở mã nguồn</strong>, ai cũng tải về chạy được. Đại diện: Llama (Meta), DeepSeek, Mistral, Qwen. Doanh nghiệp dùng để chạy nội bộ, không phụ thuộc nhà cung cấp.
+        </div>
+        <div class="buzzword-example">"Tự host Llama trong server công ty cho an toàn dữ liệu"</div>
+      </div>
+
+      <div class="buzzword-card b7">
+        <div class="buzzword-head">
+          <span class="buzzword-name">Reasoning model</span>
+          <span class="buzzword-pron">"mô hình suy luận"</span>
+          <span class="buzzword-hot">Hot</span>
+        </div>
+        <div class="buzzword-body">
+          AI <strong>"suy nghĩ chậm"</strong> — dành nhiều thời gian phân tích trước khi trả lời, giỏi toán, code, logic phức tạp. Ví dụ: OpenAI o3, Claude Opus thinking, DeepSeek R1.
+        </div>
+        <div class="buzzword-example">"Dùng reasoning model cho bài toán phức tạp, đắt nhưng đáng"</div>
+      </div>
+
+      <div class="buzzword-card b8">
+        <div class="buzzword-head">
+          <span class="buzzword-name">Token</span>
+        </div>
+        <div class="buzzword-body">
+          Đơn vị <strong>đếm chữ</strong> của AI (~3/4 từ tiếng Anh, ~1 chữ tiếng Việt). Tính tiền API theo token. "Context window 200K tokens" = AI nhớ được khoảng 500 trang.
+        </div>
+        <div class="buzzword-example">"Gemini có context window 2 triệu tokens, đọc cả cuốn sách"</div>
+      </div>
+
+      <div class="buzzword-card b1">
+        <div class="buzzword-head">
+          <span class="buzzword-name">Jailbreak</span>
+        </div>
+        <div class="buzzword-body">
+          <strong>"Phá khóa"</strong> AI — dùng prompt tinh vi để AI làm việc bị cấm (viết nội dung độc hại, lộ thông tin). Là rủi ro bảo mật chính khi triển khai chatbot cho khách hàng.
+        </div>
+        <div class="buzzword-example">"Test jailbreak trước khi launch chatbot ra công chúng"</div>
+      </div>
+
+      <div class="buzzword-card b2">
+        <div class="buzzword-head">
+          <span class="buzzword-name">Foundation model</span>
+        </div>
+        <div class="buzzword-body">
+          AI <strong>"nền móng"</strong> được huấn luyện trên dữ liệu khổng lồ, dùng làm cơ sở cho mọi ứng dụng. GPT, Claude, Gemini đều là foundation model. Xây trên đó là Application layer.
+        </div>
+        <div class="buzzword-example">"Không cần build foundation model, hãy build trên top"</div>
+      </div>
+
+      <div class="buzzword-card b3">
+        <div class="buzzword-head">
+          <span class="buzzword-name">Distillation</span>
+          <span class="buzzword-pron">"chưng cất"</span>
+        </div>
+        <div class="buzzword-body">
+          Huấn luyện một <strong>mô hình nhỏ</strong> bắt chước mô hình lớn — giữ được phần lớn năng lực nhưng nhẹ, nhanh, rẻ hơn nhiều. Cách DeepSeek làm rúng động thị trường đầu 2025.
+        </div>
+        <div class="buzzword-example">"Distill model lớn xuống chạy được trên laptop"</div>
+      </div>
+
+      <div class="buzzword-card b4">
+        <div class="buzzword-head">
+          <span class="buzzword-name">Guardrail</span>
+          <span class="buzzword-pron">"rào chắn"</span>
+        </div>
+        <div class="buzzword-body">
+          Lớp <strong>kiểm soát đầu vào/ra</strong> cho AI — chặn nội dung nhạy cảm, lọc thông tin sai, đảm bảo AI nói đúng tone công ty. Bắt buộc khi deploy cho khách hàng.
+        </div>
+        <div class="buzzword-example">"Cần guardrail trước khi chatbot trả lời câu liên quan pháp lý"</div>
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
+
+</body>
+</html>
