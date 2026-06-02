@@ -203,7 +203,74 @@
   </style>
 </section>
 
-<!-- ============ 03 · INGESTION ============ -->
+<!-- ============ 2b · WHERE IS THE HARNESS? ============ -->
+<section data-label="Đâu là Harness?">
+  <div class="pad">
+    <div class="kicker anim">Agent = Model + Harness</div>
+    <h2 class="anim d1" style="font-size:44px;margin-top:14px;">Trong dự án này, <span class="serif-it accent">"model"</span> chỉ là 1 lời gọi. Phần còn lại là harness.</h2>
+
+    <div style="display:grid;grid-template-columns:240px 1fr;gap:36px;margin-top:30px;flex:1;align-items:start;">
+
+      <!-- the model box -->
+      <div class="anim d2" style="border:1.5px solid var(--ink);border-radius:6px;padding:24px;background:var(--ink);color:var(--paper);display:flex;flex-direction:column;gap:10px;">
+        <div style="font-family:var(--mono);font-size:12px;letter-spacing:.14em;color:var(--accent-soft);">MODEL</div>
+        <div style="font-family:var(--display);font-size:24px;line-height:1.15;">Claude<br>Sonnet / Haiku</div>
+        <div style="font-family:var(--mono);font-size:13px;color:#C9C2B2;margin-top:6px;line-height:1.5;">
+          1 hàm:<br><code style="color:#E6D3C5;background:rgba(255,255,255,.08);">generate(ctx)</code><br><br>
+          ~5% codebase<br>~80% chi phí token<br>~0% niềm tin
+        </div>
+      </div>
+
+      <!-- the harness mapping -->
+      <div>
+        <div class="eyebrow anim d2" style="margin-bottom:12px;">6 thành phần harness — và slide tương ứng</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+
+          <div class="tcard anim d3" style="padding:14px 18px;gap:4px;">
+            <div class="t-head"><div class="t-name" style="font-size:18px;">1 · Tools</div><div class="t-tag">slide 3, 9</div></div>
+            <div class="t-body" style="font-size:14px;">Connectors (SharePoint, Drive, S3) · tool calling (<code>search_docs</code>, <code>get_doc</code>, <code>sql_query</code>, <code>read_table</code>).</div>
+          </div>
+
+          <div class="tcard anim d3" style="padding:14px 18px;gap:4px;">
+            <div class="t-head"><div class="t-name" style="font-size:18px;">2 · Context</div><div class="t-tag">slide 4, 5, 8</div></div>
+            <div class="t-body" style="font-size:14px;">OCR · layout · semantic chunking · parent-doc · context packing chống lost-in-the-middle.</div>
+          </div>
+
+          <div class="tcard anim d4" style="padding:14px 18px;gap:4px;">
+            <div class="t-head"><div class="t-name" style="font-size:18px;">3 · Retrieval</div><div class="t-tag">slide 6, 7, 8</div></div>
+            <div class="t-body" style="font-size:14px;">Hybrid (dense + BM25) · RRF (k=60) · cross-encoder rerank · MMR (λ=0.7) · ACL pre-filter.</div>
+          </div>
+
+          <div class="tcard anim d4" style="padding:14px 18px;gap:4px;">
+            <div class="t-head"><div class="t-name" style="font-size:18px;">4 · Verification</div><div class="t-tag">slide 9, 10, 11</div></div>
+            <div class="t-body" style="font-size:14px;">Groundedness ≥ 0.9 · LLM-as-judge · span-level citation · structured output · refusal có lý do.</div>
+          </div>
+
+          <div class="tcard anim d5" style="padding:14px 18px;gap:4px;">
+            <div class="t-head"><div class="t-name" style="font-size:18px;">5 · Orchestration</div><div class="t-tag">slide 9</div></div>
+            <div class="t-body" style="font-size:14px;">Planner/router (Haiku) · agentic loop bounded (MAX_STEPS=4) · HITL khi vượt ngân sách.</div>
+          </div>
+
+          <div class="tcard anim d5" style="padding:14px 18px;gap:4px;">
+            <div class="t-head"><div class="t-name" style="font-size:18px;">6 · Observability</div><div class="t-tag">slide 11, 12, 13</div></div>
+            <div class="t-body" style="font-size:14px;">OTEL tracing · Langfuse · RAGAS metrics · CI regression gate · audit log immutable.</div>
+          </div>
+
+        </div>
+
+        <div class="anim d6" style="margin-top:16px;border-left:3px solid var(--accent);padding:10px 16px;background:rgba(176,84,47,.05);">
+          <p style="font-size:16px;color:var(--ink-2);line-height:1.5;">
+            <b>Đọc deck này như đọc harness:</b> mỗi slide từ 3 trở đi mô tả <b>một mảnh của 1 trong 6 thành phần</b> trên.
+            Đổi model (Sonnet→Opus, hay GPT-4o, hay Llama) — 6 mảnh harness <b>không đổi</b>. Đó là lý do harness là phần đáng đầu tư.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="footer"><span>03 · Đâu là Harness?</span><span>Enterprise File Search</span></div>
+</section>
+
+<!-- ============ 04 · INGESTION ============ -->
 <section data-label="01 · Ingestion">
   <div class="pad">
     <div class="kicker anim">Lớp 1 · Connectors &amp; Ingestion</div>
