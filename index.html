@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MOR — Bức tranh AI 2026</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --bg: #FAF8F3;
+    --bg-card: #FFFFFF;
+    --ink: #1A1A1A;
+    --ink-soft: #4A4A48;
+    --ink-mute: #807E78;
+    --line: #D9D2BE;
+    --line-soft: #E5DFD0;
+    --accent: #B5481C;
+    --accent-2: #E8862A;
+    --accent-3: #F4B942;
+    --c-blue: #1E5A8E;
+  }
+
+  body {
+    font-family: 'Inter', -apple-system, sans-serif;
+    background: var(--bg);
+    color: var(--ink);
+    min-height: 100vh;
+    padding: 48px 24px;
+    -webkit-font-smoothing: antialiased;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .page {
+    max-width: 980px;
+    width: 100%;
+  }
+
+  /* === LOGO === */
+  .brand {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 40px;
+  }
+
+  .logo {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+
+  .logo-mark {
+    width: 64px;
+    height: 64px;
+  }
+
+  .logo-text {
+    font-family: 'Fraunces', Georgia, serif;
+    font-size: 44px;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    color: var(--c-blue);
+    line-height: 1;
+  }
+
+  .brand-tag {
+    font-size: 12px;
+    color: var(--ink-mute);
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+  }
+
+  /* === HEADER === */
+  .header {
+    text-align: center;
+    margin-bottom: 36px;
+  }
+
+  .header h1 {
+    font-family: 'Fraunces', serif;
+    font-size: 34px;
+    font-weight: 500;
+    letter-spacing: -0.02em;
+    line-height: 1.2;
+  }
+
+  .header h1 em {
+    font-style: italic;
+    color: var(--accent);
+  }
+
+  .header p {
+    margin-top: 10px;
+    font-size: 14px;
+    color: var(--ink-soft);
+  }
+
+  /* === CARDS === */
+  .nav-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 20px;
+  }
+
+  .nav-card {
+    background: var(--bg-card);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 26px 24px;
+    text-decoration: none;
+    color: inherit;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .nav-card::before {
+    content: "";
+    position: absolute;
+    inset: 0 0 auto 0;
+    height: 4px;
+    background: linear-gradient(90deg, var(--accent), var(--accent-2), var(--accent-3));
+  }
+
+  .nav-card:hover {
+    transform: translateY(-3px);
+    border-color: var(--accent);
+    box-shadow: 0 12px 28px -16px rgba(181, 72, 28, 0.35);
+  }
+
+  .nav-card .badge {
+    font-size: 10px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--accent);
+    font-weight: 600;
+  }
+
+  .nav-card h2 {
+    font-family: 'Fraunces', serif;
+    font-size: 22px;
+    font-weight: 500;
+    line-height: 1.25;
+    letter-spacing: -0.01em;
+  }
+
+  .nav-card p {
+    font-size: 13.5px;
+    color: var(--ink-soft);
+    line-height: 1.55;
+  }
+
+  .nav-card .arrow {
+    margin-top: 6px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--accent);
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .nav-card .arrow::after {
+    content: "→";
+    transition: transform 0.2s ease;
+  }
+
+  .nav-card:hover .arrow::after {
+    transform: translateX(4px);
+  }
+
+  /* === FOOTER === */
+  .foot {
+    margin-top: 40px;
+    text-align: center;
+    font-size: 12px;
+    color: var(--ink-mute);
+    letter-spacing: 0.04em;
+  }
+</style>
+</head>
+<body>
+  <div class="page">
+
+    <div class="brand">
+      <div class="logo">
+        <svg class="logo-mark" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" aria-label="MOR logo">
+          <defs>
+            <linearGradient id="mor-g1" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stop-color="#F4B942"/>
+              <stop offset="55%" stop-color="#E8862A"/>
+              <stop offset="100%" stop-color="#B5481C"/>
+            </linearGradient>
+            <linearGradient id="mor-g2" x1="0" y1="1" x2="1" y2="0">
+              <stop offset="0%" stop-color="#B5481C"/>
+              <stop offset="100%" stop-color="#E8862A"/>
+            </linearGradient>
+          </defs>
+          <path d="M6 24 C 18 50, 46 50, 58 24 C 50 38, 14 38, 6 24 Z"
+                fill="url(#mor-g1)"/>
+          <path d="M10 18 C 22 40, 42 40, 54 18 C 46 30, 18 30, 10 18 Z"
+                fill="url(#mor-g2)" opacity="0.85"/>
+        </svg>
+        <div class="logo-text">MOR</div>
+      </div>
+      <div class="brand-tag">Make Our dreams Realized</div>
+    </div>
+
+    <div class="header">
+      <h1>Bức tranh <em>AI 2026</em></h1>
+      <p>Chọn một góc nhìn để khám phá hệ sinh thái và kỹ thuật AI</p>
+    </div>
+
+    <div class="nav-grid">
+
+      <a class="nav-card" href="overview.html">
+        <span class="badge">Sơ đồ tổng quan</span>
+        <h2>Overview — Bức tranh AI 2026</h2>
+        <p>Sơ đồ tổng quan hệ sinh thái AI: các nhánh chính, công cụ, công nghệ nền tảng và cách chúng kết nối với nhau.</p>
+        <span class="arrow">Xem tổng quan</span>
+      </a>
+
+      <a class="nav-card" href="Harness Engineering.html">
+        <span class="badge">Kỹ thuật</span>
+        <h2>Harness Engineering</h2>
+        <p>Đi sâu vào kỹ thuật "harness" — cách xây dựng, vận hành và tối ưu hệ thống agent AI trong thực tế.</p>
+        <span class="arrow">Khám phá kỹ thuật</span>
+      </a>
+
+    </div>
+
+    <div class="foot">
+      © MOR Software · AI Knowledge Hub
+    </div>
+
+  </div>
+</body>
+</html>
