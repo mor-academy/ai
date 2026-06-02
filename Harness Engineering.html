@@ -1,0 +1,693 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Harness Engineering — Kỹ thuật xây dựng "khung vận hành" cho AI Agent</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400&family=Be+Vietnam+Pro:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  deck-stage:not(:defined){visibility:hidden}
+  :root{
+    --paper:#F4F1EA;
+    --paper-2:#ECE7DC;
+    --ink:#1C1A15;
+    --ink-2:#5B564B;
+    --ink-3:#8C8576;
+    --line:#D6CFC0;
+    --line-2:#C5BCA8;
+    --accent:#B0542F;
+    --accent-soft:#E6D3C5;
+    --accent-ink:#7E3B1F;
+    --good:#3F6B53;
+    --display:"Newsreader",Georgia,serif;
+    --sans:"Be Vietnam Pro",system-ui,sans-serif;
+    --mono:"IBM Plex Mono",monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{background:#15140f;}
+  deck-stage{background:#15140f;}
+  section{
+    background:var(--paper);
+    color:var(--ink);
+    font-family:var(--sans);
+    font-weight:400;
+    overflow:hidden;
+    -webkit-font-smoothing:antialiased;
+  }
+  /* ---------- shared scaffolding ---------- */
+  .pad{position:absolute;inset:0;padding:96px 120px;display:flex;flex-direction:column;}
+  .kicker{
+    font-family:var(--mono);font-size:22px;letter-spacing:.22em;text-transform:uppercase;
+    color:var(--accent);font-weight:500;display:flex;align-items:center;gap:16px;
+  }
+  .kicker::before{content:"";width:34px;height:1.5px;background:var(--accent);display:inline-block;}
+  .eyebrow{font-family:var(--mono);font-size:22px;letter-spacing:.2em;text-transform:uppercase;color:var(--ink-3);font-weight:500;}
+  h1,h2,h3{font-family:var(--display);font-weight:500;line-height:1.04;letter-spacing:-.01em;}
+  .lead{font-size:30px;line-height:1.5;color:var(--ink-2);font-weight:300;}
+  .footer{
+    position:absolute;left:120px;right:120px;bottom:54px;display:flex;justify-content:space-between;
+    font-family:var(--mono);font-size:16px;letter-spacing:.08em;color:var(--ink-3);text-transform:uppercase;
+    border-top:1.5px solid var(--line);padding-top:18px;
+  }
+  .accent{color:var(--accent);}
+  .serif-it{font-family:var(--display);font-style:italic;font-weight:400;}
+  b,strong{font-weight:600;color:var(--ink);}
+  .pill{display:inline-flex;align-items:center;gap:10px;font-family:var(--mono);font-size:18px;letter-spacing:.1em;
+    text-transform:uppercase;color:var(--ink-2);border:1.5px solid var(--line-2);border-radius:999px;padding:8px 18px;}
+
+  /* ---------- card grid ---------- */
+  .card{border:1.5px solid var(--line);background:rgba(255,255,255,.32);padding:32px 34px;display:flex;flex-direction:column;gap:14px;border-radius:3px;}
+  .card .idx{font-family:var(--mono);font-size:18px;color:var(--accent);letter-spacing:.1em;}
+  .card h3{font-size:30px;line-height:1.1;}
+  .card p{font-size:19px;line-height:1.5;color:var(--ink-2);}
+
+  /* number badge */
+  .badge{font-family:var(--display);font-size:26px;color:var(--paper);background:var(--ink);
+    width:50px;height:50px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex:0 0 auto;}
+  .badge.acc{background:var(--accent);}
+
+  .flow-arrow{color:var(--ink-3);font-size:30px;display:flex;align-items:center;justify-content:center;}
+
+  /* entrance */
+  @media (prefers-reduced-motion:no-preference){
+    [data-deck-active] .anim{opacity:0;transform:translateY(18px);animation:rise .6s cubic-bezier(.2,.7,.2,1) forwards;}
+    [data-deck-active] .anim.d1{animation-delay:.06s}
+    [data-deck-active] .anim.d2{animation-delay:.14s}
+    [data-deck-active] .anim.d3{animation-delay:.22s}
+    [data-deck-active] .anim.d4{animation-delay:.30s}
+    [data-deck-active] .anim.d5{animation-delay:.38s}
+    [data-deck-active] .anim.d6{animation-delay:.46s}
+    @keyframes rise{to{opacity:1;transform:none}}
+  }
+</style>
+</head>
+<body>
+<deck-stage width="1920" height="1080">
+
+<!-- ============ 01 · TITLE ============ -->
+<section data-label="Bìa">
+  <div class="pad" style="justify-content:space-between;">
+    <div class="anim" style="display:flex;justify-content:space-between;align-items:flex-start;">
+      <div class="kicker">Tài liệu kỹ thuật &nbsp;·&nbsp; AI Engineering</div>
+      <div class="eyebrow">2026</div>
+    </div>
+
+    <div style="max-width:1480px;">
+      <div class="anim d1 eyebrow" style="margin-bottom:26px;">Agent = Model + Harness</div>
+      <h1 class="anim d2" style="font-size:128px;line-height:.98;">Harness<br><span class="accent serif-it">Engineering</span></h1>
+      <p class="anim d3 lead" style="margin-top:40px;max-width:1080px;">
+        Nghệ thuật và kỹ thuật xây dựng <b>"khung vận hành"</b> bao quanh một mô hình AI — công cụ, ngữ cảnh,
+        bộ nhớ, kiểm chứng và điều phối — để biến một mô hình thông minh thành một <b>tác tử (agent) đáng tin cậy trong sản xuất</b>.
+      </p>
+    </div>
+
+    <div class="anim d4" style="display:flex;gap:14px;flex-wrap:wrap;">
+      <span class="pill">Định nghĩa &amp; kiến trúc</span>
+      <span class="pill">Framework đi kèm</span>
+      <span class="pill">Dự án khai thác dữ liệu</span>
+      <span class="pill">Case study HR</span>
+      <span class="pill">Lộ trình áp dụng</span>
+    </div>
+  </div>
+  <div class="footer"><span>Harness Engineering</span><span>Trình bày nội bộ</span></div>
+</section>
+
+<!-- ============ 02 · THE PROBLEM ============ -->
+<section data-label="Vấn đề">
+  <div class="pad">
+    <div class="kicker anim">Tại sao chủ đề này quan trọng</div>
+    <h2 class="anim d1" style="font-size:62px;margin-top:26px;max-width:1400px;">
+      Mô hình giỏi không tự động tạo ra sản phẩm tốt.
+    </h2>
+    <p class="anim d2 lead" style="margin-top:24px;max-width:1180px;">
+      Một LLM hàng đầu vẫn thường xuyên thất bại khi đưa vào doanh nghiệp: bịa thông tin, thiếu dữ liệu nội bộ,
+      không gọi được hệ thống, không kiểm tra lại kết quả. <b>Vấn đề hiếm khi nằm ở mô hình — nó nằm ở mọi thứ bao quanh mô hình.</b>
+    </p>
+
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:24px;margin-top:64px;">
+      <div class="card anim d3"><div class="idx">VẤN ĐỀ 01</div><h3>Bịa &amp; thiếu căn cứ</h3><p>Mô hình "tự tin sai" vì không được nối với dữ liệu thật của doanh nghiệp.</p></div>
+      <div class="card anim d4"><div class="idx">VẤN ĐỀ 02</div><h3>Không hành động</h3><p>Chỉ sinh chữ — không truy vấn CSDL, không gọi API, không đọc được file.</p></div>
+      <div class="card anim d5"><div class="idx">VẤN ĐỀ 03</div><h3>Không đáng tin</h3><p>Không tự kiểm tra, không có điểm dừng, không log — không thể đưa vào vận hành.</p></div>
+    </div>
+
+    <p class="anim d6" style="margin-top:54px;font-family:var(--display);font-style:italic;font-size:34px;color:var(--ink);max-width:1300px;">
+      “Trong việc đưa một AI agent ra thị trường, ~90% công sức nằm ở <span class="accent">harness</span>, không phải ở mô hình.”
+    </p>
+  </div>
+  <div class="footer"><span>02 · Vấn đề</span><span>Harness Engineering</span></div>
+</section>
+
+<!-- ============ 03 · DEFINITION ============ -->
+<section data-label="Định nghĩa">
+  <div class="pad">
+    <div class="kicker anim">Định nghĩa cốt lõi</div>
+    <h2 class="anim d1" style="font-size:60px;margin-top:24px;">Harness là gì?</h2>
+
+    <div style="display:grid;grid-template-columns:1.05fr .95fr;gap:80px;margin-top:48px;align-items:center;flex:1;">
+      <div>
+        <p class="anim d2" style="font-size:27px;line-height:1.6;color:var(--ink-2);">
+          <b style="color:var(--ink)">Harness</b> (tạm dịch: <i>bộ khung vận hành / "dây an toàn"</i>) là toàn bộ lớp phần mềm
+          bao quanh mô hình AI, quyết định: mô hình <b>nhìn thấy gì</b> (ngữ cảnh), <b>làm được gì</b> (công cụ),
+          <b>chạy theo trình tự nào</b> (điều phối), và <b>khi nào được tin tưởng</b> (kiểm chứng).
+        </p>
+        <p class="anim d3" style="font-size:27px;line-height:1.6;color:var(--ink-2);margin-top:26px;">
+          <b>Harness Engineering</b> là bộ môn thiết kế lớp khung đó một cách có hệ thống — giống như kỹ sư
+          không chỉ chọn động cơ, mà thiết kế cả khung gầm, hộp số, phanh và bảng điều khiển quanh nó.
+        </p>
+      </div>
+
+      <div class="anim d4" style="border:1.5px solid var(--line-2);border-radius:6px;padding:48px;background:rgba(255,255,255,.4);">
+        <div class="eyebrow" style="text-align:center;margin-bottom:30px;">Phương trình nền tảng</div>
+        <div style="display:flex;align-items:center;justify-content:center;gap:22px;font-family:var(--display);flex-wrap:wrap;">
+          <span style="font-size:56px;">Agent</span>
+          <span style="font-size:48px;color:var(--ink-3);">=</span>
+          <span style="font-size:56px;border-bottom:3px solid var(--ink);padding-bottom:6px;">Model</span>
+          <span style="font-size:48px;color:var(--ink-3);">+</span>
+          <span style="font-size:56px;color:var(--accent);border-bottom:3px solid var(--accent);padding-bottom:6px;">Harness</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;margin-top:34px;gap:24px;">
+          <div style="flex:1;"><div class="eyebrow" style="font-size:14px;color:var(--ink-2);">Model cung cấp</div><p style="font-size:18px;color:var(--ink-2);margin-top:8px;line-height:1.45;">Suy luận, ngôn ngữ, sáng tạo — đang dần trở thành "hàng hoá".</p></div>
+          <div style="width:1.5px;background:var(--line);"></div>
+          <div style="flex:1;"><div class="eyebrow" style="font-size:14px;color:var(--accent);">Harness cung cấp</div><p style="font-size:18px;color:var(--ink-2);margin-top:8px;line-height:1.45;">Độ tin cậy, dữ liệu, hành động — nơi tạo ra lợi thế cạnh tranh.</p></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="footer"><span>03 · Định nghĩa</span><span>Harness Engineering</span></div>
+</section>
+
+<!-- ============ 04 · EVOLUTION ============ -->
+<section data-label="Tiến hoá">
+  <div class="pad">
+    <div class="kicker anim">Bối cảnh tiến hoá</div>
+    <h2 class="anim d1" style="font-size:58px;margin-top:24px;max-width:1300px;">Từ "viết prompt khéo" đến "thiết kế cả hệ thống".</h2>
+
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:0;margin-top:80px;flex:1;align-content:start;">
+      <div class="anim d1" style="padding-right:34px;border-top:3px solid var(--line-2);padding-top:24px;">
+        <div class="eyebrow" style="color:var(--ink-3);">2020–22</div>
+        <h3 style="font-size:30px;margin-top:14px;">Prompt Engineering</h3>
+        <p style="font-size:19px;color:var(--ink-2);margin-top:14px;line-height:1.5;">Tối ưu một câu lệnh để mô hình trả lời tốt hơn. Tĩnh, một lượt.</p>
+      </div>
+      <div class="anim d2" style="padding:0 34px;border-top:3px solid var(--line-2);padding-top:24px;">
+        <div class="eyebrow" style="color:var(--ink-3);">2023</div>
+        <h3 style="font-size:30px;margin-top:14px;">RAG &amp; Tools</h3>
+        <p style="font-size:19px;color:var(--ink-2);margin-top:14px;line-height:1.5;">Nối mô hình với dữ liệu (truy hồi) và công cụ (gọi hàm) để bớt bịa.</p>
+      </div>
+      <div class="anim d3" style="padding:0 34px;border-top:3px solid var(--line-2);padding-top:24px;">
+        <div class="eyebrow" style="color:var(--ink-3);">2024</div>
+        <h3 style="font-size:30px;margin-top:14px;">Agents</h3>
+        <p style="font-size:19px;color:var(--ink-2);margin-top:14px;line-height:1.5;">Mô hình lặp: tự lập kế hoạch, hành động nhiều bước, quan sát kết quả.</p>
+      </div>
+      <div class="anim d4" style="padding-left:34px;border-top:3px solid var(--accent);padding-top:24px;">
+        <div class="eyebrow" style="color:var(--accent);">2025–26</div>
+        <h3 style="font-size:30px;margin-top:14px;color:var(--accent);">Harness Engineering</h3>
+        <p style="font-size:19px;color:var(--ink-2);margin-top:14px;line-height:1.5;">Coi toàn bộ khung quanh mô hình là sản phẩm kỹ thuật cần thiết kế &amp; đo lường.</p>
+      </div>
+    </div>
+
+    <p class="anim d5 lead" style="margin-top:60px;max-width:1300px;">
+      Khi mô hình ngày càng mạnh và rẻ, <b>khác biệt giữa các sản phẩm AI chuyển từ "model nào" sang "harness ra sao".</b>
+    </p>
+  </div>
+  <div class="footer"><span>04 · Tiến hoá</span><span>Harness Engineering</span></div>
+</section>
+
+<!-- ============ 05 · SECTION DIVIDER — ARCHITECTURE ============ -->
+<section data-label="Phần · Kiến trúc" style="background:var(--ink);color:var(--paper);">
+  <div class="pad" style="justify-content:center;">
+    <div class="anim eyebrow" style="color:var(--accent-soft);">Phần I</div>
+    <h2 class="anim d1" style="font-size:96px;color:var(--paper);margin-top:20px;line-height:1;">Bên trong<br>một <span class="serif-it" style="color:var(--accent-soft)">harness</span></h2>
+    <p class="anim d2" style="font-size:26px;color:#C9C2B2;margin-top:34px;max-width:1000px;line-height:1.5;">
+      Sáu thành phần cấu thành, vòng lặp tác tử, và sự khác biệt trong tư duy thiết kế.
+    </p>
+  </div>
+  <div class="footer" style="color:#6f6a5d;border-top-color:#3a372f;"><span>05 · Kiến trúc</span><span>Harness Engineering</span></div>
+</section>
+
+<!-- ============ 06 · SIX COMPONENTS ============ -->
+<section data-label="6 thành phần">
+  <div class="pad">
+    <div class="kicker anim">Giải phẫu</div>
+    <h2 class="anim d1" style="font-size:52px;margin-top:20px;">Sáu thành phần của một harness</h2>
+
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:22px;margin-top:44px;flex:1;align-content:center;">
+      <div class="card anim d1"><div style="display:flex;align-items:center;gap:14px;"><span class="badge acc">1</span><h3 style="font-size:25px;">Ngữ cảnh &amp; Bộ nhớ</h3></div><p>Quản lý <b>thứ gì được nạp vào cửa sổ ngữ cảnh</b>: chỉ dẫn, lịch sử, tài liệu liên quan. Đây là "context engineering".</p></div>
+      <div class="card anim d2"><div style="display:flex;align-items:center;gap:14px;"><span class="badge acc">2</span><h3 style="font-size:25px;">Công cụ &amp; Hành động</h3></div><p>Gọi hàm, API, truy vấn SQL, chạy code, đọc/ghi file. Cho mô hình <b>tay chân</b> để tác động lên thế giới thật.</p></div>
+      <div class="card anim d3"><div style="display:flex;align-items:center;gap:14px;"><span class="badge acc">3</span><h3 style="font-size:25px;">Truy hồi tri thức</h3></div><p>RAG, tìm kiếm ngữ nghĩa, chỉ mục có cấu trúc — đưa <b>dữ liệu nội bộ</b> vào đúng lúc, đúng chỗ.</p></div>
+      <div class="card anim d4"><div style="display:flex;align-items:center;gap:14px;"><span class="badge acc">4</span><h3 style="font-size:25px;">Điều phối &amp; Luồng</h3></div><p>Vòng lặp, lập kế hoạch, định tuyến, phân rã tác vụ, gọi nhiều agent. <b>Bộ não điều khiển</b> trình tự thực thi.</p></div>
+      <div class="card anim d5"><div style="display:flex;align-items:center;gap:14px;"><span class="badge acc">5</span><h3 style="font-size:25px;">Kiểm chứng &amp; Lan can</h3></div><p>Tự kiểm tra, ràng buộc schema, đánh giá (eval), trích dẫn nguồn, giới hạn quyền. <b>Cơ chế an toàn.</b></p></div>
+      <div class="card anim d6"><div style="display:flex;align-items:center;gap:14px;"><span class="badge acc">6</span><h3 style="font-size:25px;">Môi trường &amp; Quan trắc</h3></div><p>Sandbox thực thi, phân quyền, log/trace, retry, điểm dừng, can thiệp của con người. <b>Nền hạ tầng vận hành.</b></p></div>
+    </div>
+  </div>
+  <div class="footer"><span>06 · Sáu thành phần</span><span>Harness Engineering</span></div>
+</section>
+
+<!-- ============ 07 · THE LOOP ============ -->
+<section data-label="Vòng lặp">
+  <div class="pad">
+    <div class="kicker anim">Cơ chế vận hành</div>
+    <h2 class="anim d1" style="font-size:54px;margin-top:20px;">Vòng lặp tác tử (Agent Loop)</h2>
+    <p class="anim d2 lead" style="margin-top:20px;max-width:1200px;font-size:26px;">
+      Harness không chạy một lượt. Nó điều khiển một <b>vòng lặp khép kín</b> cho tới khi đạt điều kiện dừng.
+    </p>
+
+    <div style="display:flex;align-items:stretch;gap:18px;margin-top:70px;flex:1;align-items:center;">
+      <div class="card anim d1" style="flex:1;text-align:center;align-items:center;"><span class="badge">1</span><h3 style="font-size:24px;">Thu thập ngữ cảnh</h3><p>Nạp chỉ dẫn + truy hồi dữ liệu liên quan.</p></div>
+      <div class="flow-arrow anim d2">→</div>
+      <div class="card anim d2" style="flex:1;text-align:center;align-items:center;"><span class="badge">2</span><h3 style="font-size:24px;">Suy luận &amp; Lập kế hoạch</h3><p>Mô hình quyết định bước tiếp theo.</p></div>
+      <div class="flow-arrow anim d3">→</div>
+      <div class="card anim d3" style="flex:1;text-align:center;align-items:center;"><span class="badge acc">3</span><h3 style="font-size:24px;">Hành động</h3><p>Gọi công cụ / API / truy vấn dữ liệu.</p></div>
+      <div class="flow-arrow anim d4">→</div>
+      <div class="card anim d4" style="flex:1;text-align:center;align-items:center;"><span class="badge">4</span><h3 style="font-size:24px;">Quan sát</h3><p>Đọc kết quả, đối chiếu, kiểm chứng.</p></div>
+    </div>
+
+    <div class="anim d5" style="display:flex;align-items:center;gap:18px;margin-top:34px;font-family:var(--mono);font-size:18px;color:var(--ink-2);">
+      <span style="color:var(--accent);">↺ LẶP LẠI</span>
+      <span style="flex:1;height:1.5px;background:var(--line);"></span>
+      <span>cho tới khi: đạt mục tiêu · vượt ngưỡng tin cậy · hết bước · cần con người → <b style="color:var(--ink)">DỪNG</b></span>
+    </div>
+    <p class="anim d6" style="margin-top:30px;font-size:21px;color:var(--ink-2);max-width:1300px;">
+      Đây chính là khuôn mẫu <b>ReAct</b> (Reasoning + Acting): xen kẽ "suy nghĩ" và "hành động" thay vì trả lời một phát.
+    </p>
+  </div>
+  <div class="footer"><span>07 · Vòng lặp</span><span>Harness Engineering</span></div>
+</section>
+
+<!-- ============ 08 · MINDSET SHIFT ============ -->
+<section data-label="Đổi tư duy">
+  <div class="pad">
+    <div class="kicker anim">Đổi tư duy</div>
+    <h2 class="anim d1" style="font-size:54px;margin-top:20px;">Model-centric &nbsp;→&nbsp; Harness-centric</h2>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:40px;margin-top:54px;flex:1;align-content:center;">
+      <div class="anim d2" style="border:1.5px solid var(--line);border-radius:6px;padding:40px;">
+        <div class="eyebrow" style="color:var(--ink-3);margin-bottom:24px;">Tư duy cũ — lấy mô hình làm trung tâm</div>
+        <ul style="list-style:none;display:flex;flex-direction:column;gap:18px;">
+          <li style="font-size:21px;color:var(--ink-2);">— "Đổi sang mô hình mạnh hơn là xong."</li>
+          <li style="font-size:21px;color:var(--ink-2);">— Tối ưu bằng cách sửa câu prompt.</li>
+          <li style="font-size:21px;color:var(--ink-2);">— Đánh giá bằng cảm tính ("nhìn có vẻ ổn").</li>
+          <li style="font-size:21px;color:var(--ink-2);">— Thất bại là "lỗi của mô hình".</li>
+        </ul>
+      </div>
+      <div class="anim d3" style="border:1.5px solid var(--accent);border-radius:6px;padding:40px;background:rgba(176,84,47,.05);">
+        <div class="eyebrow" style="color:var(--accent);margin-bottom:24px;">Tư duy mới — lấy harness làm trung tâm</div>
+        <ul style="list-style:none;display:flex;flex-direction:column;gap:18px;">
+          <li style="font-size:21px;color:var(--ink);">— "Mô hình cần <b>thấy gì, làm gì, kiểm gì</b>?"</li>
+          <li style="font-size:21px;color:var(--ink);">— Tối ưu bằng dữ liệu, công cụ, vòng lặp.</li>
+          <li style="font-size:21px;color:var(--ink);">— Đánh giá bằng <b>bộ eval &amp; số liệu</b>.</li>
+          <li style="font-size:21px;color:var(--ink);">— Thất bại là <b>lỗi thiết kế harness</b> cần sửa.</li>
+        </ul>
+      </div>
+    </div>
+    <p class="anim d4" style="margin-top:48px;font-family:var(--display);font-style:italic;font-size:30px;color:var(--ink);">
+      Lợi thế bền vững của doanh nghiệp không nằm ở mô hình bạn thuê, mà ở <span class="accent">harness bạn xây</span> quanh dữ liệu của chính mình.
+    </p>
+  </div>
+  <div class="footer"><span>08 · Đổi tư duy</span><span>Harness Engineering</span></div>
+</section>
+
+<!-- ============ 09 · SECTION DIVIDER — FRAMEWORKS ============ -->
+<section data-label="Phần · Framework" style="background:var(--ink);color:var(--paper);">
+  <div class="pad" style="justify-content:center;">
+    <div class="anim eyebrow" style="color:var(--accent-soft);">Phần II</div>
+    <h2 class="anim d1" style="font-size:96px;color:var(--paper);margin-top:20px;line-height:1;">Framework<br><span class="serif-it" style="color:var(--accent-soft)">đi kèm</span></h2>
+    <p class="anim d2" style="font-size:26px;color:#C9C2B2;margin-top:34px;max-width:1000px;line-height:1.5;">
+      Những khuôn mẫu, kỹ thuật và công cụ thực chiến mà một kỹ sư harness sử dụng.
+    </p>
+  </div>
+  <div class="footer" style="color:#6f6a5d;border-top-color:#3a372f;"><span>09 · Framework</span><span>Harness Engineering</span></div>
+</section>
+
+<!-- ============ 10 · FRAMEWORKS TABLE ============ -->
+<section data-label="Framework chính">
+  <div class="pad">
+    <div class="kicker anim">Bộ công cụ tư duy</div>
+    <h2 class="anim d1" style="font-size:48px;margin-top:18px;">Các framework &amp; kỹ thuật cốt lõi</h2>
+
+    <div style="margin-top:40px;flex:1;display:flex;flex-direction:column;">
+      <div style="display:grid;grid-template-columns:.9fr 1.6fr 1.3fr;gap:0;font-family:var(--mono);font-size:15px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3);border-bottom:2px solid var(--ink);padding-bottom:14px;" class="anim">
+        <div>Khuôn mẫu</div><div>Giải quyết điều gì</div><div>Công cụ tiêu biểu</div>
+      </div>
+      <!-- rows -->
+      <div class="row anim d1"><div class="rh">ReAct</div><div class="rb">Xen kẽ suy luận &amp; hành động theo vòng lặp; nền tảng của hầu hết agent.</div><div class="rt">LangGraph, LlamaIndex</div></div>
+      <div class="row anim d2"><div class="rh">Context Engineering</div><div class="rb">Chọn lọc &amp; nén thứ đưa vào ngữ cảnh; quản lý bộ nhớ ngắn/dài hạn.</div><div class="rt">Cửa sổ ngữ cảnh, tóm tắt, memory store</div></div>
+      <div class="row anim d3"><div class="rh">RAG</div><div class="rb">Truy hồi tài liệu liên quan để trả lời có căn cứ, giảm bịa.</div><div class="rt">Vector DB (pgvector, Pinecone), embeddings</div></div>
+      <div class="row anim d4"><div class="rh">Tool Use / MCP</div><div class="rb">Chuẩn hoá cách agent gọi công cụ &amp; kết nối hệ thống ngoài.</div><div class="rt">Function calling, Model Context Protocol</div></div>
+      <div class="row anim d5"><div class="rh">Evals &amp; Guardrails</div><div class="rb">Đo chất lượng tự động, ràng buộc đầu ra, chặn hành vi sai.</div><div class="rt">LLM-as-judge, JSON schema, assertion</div></div>
+      <div class="row anim d6"><div class="rh">Observability</div><div class="rb">Theo dõi, truy vết, gỡ lỗi từng bước của agent trong sản xuất.</div><div class="rt">Tracing, logging, dashboard chi phí/độ trễ</div></div>
+    </div>
+  </div>
+  <div class="footer"><span>10 · Framework</span><span>Harness Engineering</span></div>
+  <style>
+    .row{display:grid;grid-template-columns:.9fr 1.6fr 1.3fr;gap:0;border-bottom:1.5px solid var(--line);padding:22px 0;align-items:baseline;}
+    .row .rh{font-family:var(--display);font-size:26px;font-weight:500;color:var(--accent);}
+    .row .rb{font-size:20px;color:var(--ink-2);line-height:1.45;padding-right:30px;}
+    .row .rt{font-family:var(--mono);font-size:16px;color:var(--ink-2);line-height:1.5;}
+  </style>
+</section>
+
+<!-- ============ 11 · DESIGN PRINCIPLES ============ -->
+<section data-label="Nguyên tắc">
+  <div class="pad">
+    <div class="kicker anim">Nguyên tắc thiết kế</div>
+    <h2 class="anim d1" style="font-size:50px;margin-top:18px;">Năm nguyên tắc thiết kế harness tốt</h2>
+
+    <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:22px 60px;margin-top:48px;flex:1;align-content:center;">
+      <div class="anim d1" style="display:flex;gap:22px;"><span class="badge acc">1</span><div><h3 style="font-size:27px;">Căn cứ trên dữ liệu thật</h3><p style="font-size:20px;color:var(--ink-2);margin-top:8px;line-height:1.5;">Mọi khẳng định phải truy được về nguồn. Buộc agent trích dẫn; không có nguồn thì nói "không biết".</p></div></div>
+      <div class="anim d2" style="display:flex;gap:22px;"><span class="badge acc">2</span><div><h3 style="font-size:27px;">Đầu ra có cấu trúc</h3><p style="font-size:20px;color:var(--ink-2);margin-top:8px;line-height:1.5;">Ràng buộc schema (JSON) để kết quả máy đọc được, kiểm tra được, ghép nối được vào hệ thống.</p></div></div>
+      <div class="anim d3" style="display:flex;gap:22px;"><span class="badge acc">3</span><div><h3 style="font-size:27px;">Con người ở vòng kiểm soát</h3><p style="font-size:20px;color:var(--ink-2);margin-top:8px;line-height:1.5;">Việc rủi ro cao phải có ngưỡng tin cậy &amp; điểm dừng để con người duyệt trước khi thực thi.</p></div></div>
+      <div class="anim d4" style="display:flex;gap:22px;"><span class="badge acc">4</span><div><h3 style="font-size:27px;">Đo được, lặp được</h3><p style="font-size:20px;color:var(--ink-2);margin-top:8px;line-height:1.5;">Có bộ "đề thi" (golden set) &amp; eval tự động. Không đo thì không cải tiến được.</p></div></div>
+      <div class="anim d5" style="display:flex;gap:22px;grid-column:1 / -1;max-width:48%;"><span class="badge acc">5</span><div><h3 style="font-size:27px;">Bắt đầu mỏng, mở rộng dần</h3><p style="font-size:20px;color:var(--ink-2);margin-top:8px;line-height:1.5;">Một công cụ + một nguồn dữ liệu + một eval. Chứng minh giá trị rồi mới thêm độ phức tạp.</p></div></div>
+    </div>
+  </div>
+  <div class="footer"><span>11 · Nguyên tắc</span><span>Harness Engineering</span></div>
+</section>
+
+<!-- ============ 12 · SECTION DIVIDER — BUSINESS ============ -->
+<section data-label="Phần · Dự án" style="background:var(--ink);color:var(--paper);">
+  <div class="pad" style="justify-content:center;">
+    <div class="anim eyebrow" style="color:var(--accent-soft);">Phần III</div>
+    <h2 class="anim d1" style="font-size:88px;color:var(--paper);margin-top:20px;line-height:1.02;">Dự án thực tế:<br><span class="serif-it" style="color:var(--accent-soft)">Khai thác thông tin</span><br>từ dữ liệu &amp; tài liệu</h2>
+    <p class="anim d2" style="font-size:26px;color:#C9C2B2;margin-top:30px;max-width:1080px;line-height:1.5;">
+      Bài toán kinh doanh phổ biến nhất — và cách một harness biến nó thành hệ thống đáng tin cậy.
+    </p>
+  </div>
+  <div class="footer" style="color:#6f6a5d;border-top-color:#3a372f;"><span>12 · Dự án</span><span>Harness Engineering</span></div>
+</section>
+
+<!-- ============ 13 · BUSINESS PROBLEM ============ -->
+<section data-label="Bài toán KD">
+  <div class="pad">
+    <div class="kicker anim">Bài toán kinh doanh</div>
+    <h2 class="anim d1" style="font-size:50px;margin-top:18px;max-width:1350px;">“Câu trả lời nằm trong hàng nghìn file — nhưng không ai tìm nổi.”</h2>
+
+    <div style="display:grid;grid-template-columns:1.1fr 1fr;gap:70px;margin-top:46px;flex:1;align-items:center;">
+      <div>
+        <p class="anim d2" style="font-size:23px;line-height:1.6;color:var(--ink-2);">
+          Doanh nghiệp tích luỹ khối tài liệu khổng lồ: <b>hợp đồng, hoá đơn, báo cáo, email, PDF scan, bảng tính, CSDL</b>.
+          Tri thức bị "chôn" trong đó. Nhân viên mất hàng giờ tìm kiếm thủ công, dễ sai sót, không mở rộng được.
+        </p>
+        <div style="margin-top:34px;display:flex;flex-direction:column;gap:16px;">
+          <div class="anim d3" style="display:flex;gap:16px;align-items:baseline;"><span style="font-family:var(--mono);color:var(--accent);font-size:17px;">MỤC TIÊU</span><span style="font-size:21px;color:var(--ink);">Hỏi bằng ngôn ngữ tự nhiên → nhận câu trả lời <b>kèm trích dẫn nguồn</b>.</span></div>
+          <div class="anim d4" style="display:flex;gap:16px;align-items:baseline;"><span style="font-family:var(--mono);color:var(--accent);font-size:17px;">MỤC TIÊU</span><span style="font-size:21px;color:var(--ink);">Trích xuất dữ liệu có cấu trúc từ file → đẩy vào hệ thống.</span></div>
+          <div class="anim d5" style="display:flex;gap:16px;align-items:baseline;"><span style="font-family:var(--mono);color:var(--accent);font-size:17px;">MỤC TIÊU</span><span style="font-size:21px;color:var(--ink);">Tổng hợp &amp; đối chiếu thông tin chéo nhiều tài liệu.</span></div>
+        </div>
+      </div>
+      <div class="anim d3" style="border:1.5px solid var(--line-2);border-radius:6px;padding:40px;background:rgba(255,255,255,.4);">
+        <div class="eyebrow" style="margin-bottom:26px;">Vì sao " chatbot thuần mô hình" thất bại</div>
+        <div style="display:flex;flex-direction:column;gap:20px;">
+          <div><h3 style="font-size:22px;color:var(--accent);">✕ Không biết dữ liệu nội bộ</h3><p style="font-size:18px;color:var(--ink-2);margin-top:6px;">Mô hình chưa từng thấy file của bạn.</p></div>
+          <div style="height:1.5px;background:var(--line);"></div>
+          <div><h3 style="font-size:22px;color:var(--accent);">✕ Bịa số liệu, không trích nguồn</h3><p style="font-size:18px;color:var(--ink-2);margin-top:6px;">Không thể kiểm chứng → không thể tin.</p></div>
+          <div style="height:1.5px;background:var(--line);"></div>
+          <div><h3 style="font-size:22px;color:var(--accent);">✕ Không đọc được PDF scan, bảng</h3><p style="font-size:18px;color:var(--ink-2);margin-top:6px;">Thiếu lớp xử lý &amp; trích xuất tài liệu.</p></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="footer"><span>13 · Bài toán kinh doanh</span><span>Harness Engineering</span></div>
+</section>
+
+<!-- ============ 14 · THE PIPELINE / ARCHITECTURE ============ -->
+<section data-label="Kiến trúc dự án">
+  <div class="pad">
+    <div class="kicker anim">Kiến trúc harness</div>
+    <h2 class="anim d1" style="font-size:46px;margin-top:16px;">Đường ống khai thác tài liệu, có harness</h2>
+
+    <!-- pipeline -->
+    <div style="display:flex;gap:14px;margin-top:44px;align-items:stretch;">
+      <div class="stage anim d1"><div class="sn">A</div><h3>Thu nạp</h3><p>PDF, Word, Excel, email, ảnh scan, CSDL.</p></div>
+      <div class="flow-arrow anim d2" style="font-size:24px;">→</div>
+      <div class="stage anim d2"><div class="sn">B</div><h3>Xử lý</h3><p>OCR, bóc bảng, làm sạch, cắt đoạn (chunk).</p></div>
+      <div class="flow-arrow anim d3" style="font-size:24px;">→</div>
+      <div class="stage anim d3"><div class="sn">C</div><h3>Đánh chỉ mục</h3><p>Embedding → vector DB + chỉ mục có cấu trúc.</p></div>
+      <div class="flow-arrow anim d4" style="font-size:24px;">→</div>
+      <div class="stage anim d4" style="border-color:var(--accent);background:rgba(176,84,47,.06);"><div class="sn" style="background:var(--accent);">D</div><h3 style="color:var(--accent-ink);">Agent + Harness</h3><p>Truy hồi · suy luận · trích xuất theo schema.</p></div>
+      <div class="flow-arrow anim d5" style="font-size:24px;">→</div>
+      <div class="stage anim d5"><div class="sn">E</div><h3>Đầu ra</h3><p>Câu trả lời có trích dẫn · dữ liệu cấu trúc.</p></div>
+    </div>
+
+    <!-- harness internals -->
+    <div class="anim d5" style="margin-top:40px;border:1.5px dashed var(--accent);border-radius:8px;padding:30px 34px;background:rgba(176,84,47,.04);">
+      <div class="eyebrow" style="color:var(--accent);margin-bottom:20px;">Bên trong khối "Agent + Harness" — nơi tạo ra độ tin cậy</div>
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:24px;">
+        <div><h3 style="font-size:21px;">Bộ truy hồi lai</h3><p style="font-size:18px;color:var(--ink-2);margin-top:6px;line-height:1.45;">Kết hợp tìm theo từ khoá + ngữ nghĩa + lọc metadata.</p></div>
+        <div><h3 style="font-size:21px;">Trích xuất theo schema</h3><p style="font-size:18px;color:var(--ink-2);margin-top:6px;line-height:1.45;">Buộc đầu ra khớp JSON định sẵn (trường, kiểu dữ liệu).</p></div>
+        <div><h3 style="font-size:21px;">Bắt buộc trích dẫn</h3><p style="font-size:18px;color:var(--ink-2);margin-top:6px;line-height:1.45;">Mỗi dữ kiện gắn với trang/đoạn nguồn để kiểm chứng.</p></div>
+        <div><h3 style="font-size:21px;">Ngưỡng tin cậy</h3><p style="font-size:18px;color:var(--ink-2);margin-top:6px;line-height:1.45;">Dưới ngưỡng → chuyển con người duyệt thay vì đoán bừa.</p></div>
+      </div>
+    </div>
+    <p class="anim d6" style="margin-top:26px;font-size:20px;color:var(--ink-2);">
+      <b>Mô hình</b> chỉ là khối D ở giữa. Bốn khối còn lại + bốn cơ chế bên trong — <b class="accent">đó là harness</b>, và đó là phần quyết định thành bại.
+    </p>
+  </div>
+  <div class="footer"><span>14 · Kiến trúc dự án</span><span>Harness Engineering</span></div>
+  <style>
+    .stage{flex:1;border:1.5px solid var(--line-2);border-radius:6px;padding:22px 20px;display:flex;flex-direction:column;gap:8px;background:rgba(255,255,255,.35);}
+    .stage .sn{font-family:var(--mono);font-size:16px;width:34px;height:34px;border-radius:50%;background:var(--ink);color:var(--paper);display:flex;align-items:center;justify-content:center;}
+    .stage h3{font-size:22px;}
+    .stage p{font-size:17px;color:var(--ink-2);line-height:1.4;}
+  </style>
+</section>
+
+<!-- ============ 15 · TECH STACK ============ -->
+<section data-label="Công nghệ">
+  <div class="pad">
+    <div class="kicker anim">Lớp công nghệ</div>
+    <h2 class="anim d1" style="font-size:48px;margin-top:18px;">Stack triển khai tham khảo</h2>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:24px;margin-top:48px;flex:1;align-content:center;">
+      <div class="card anim d1"><div class="idx">XỬ LÝ TÀI LIỆU</div><p style="font-family:var(--mono);font-size:19px;color:var(--ink);line-height:1.7;">OCR engine<br>Trình bóc bảng / layout<br>Bộ cắt đoạn theo ngữ nghĩa</p></div>
+      <div class="card anim d2"><div class="idx">LƯU TRỮ &amp; TRUY HỒI</div><p style="font-family:var(--mono);font-size:19px;color:var(--ink);line-height:1.7;">Vector DB (pgvector/Pinecone)<br>Tìm kiếm lai (BM25 + vector)<br>Kho metadata có cấu trúc</p></div>
+      <div class="card anim d3"><div class="idx">TẦNG AGENT</div><p style="font-family:var(--mono);font-size:19px;color:var(--ink);line-height:1.7;">LLM (function calling)<br>LangGraph / LlamaIndex<br>Tool: SQL · search · file</p></div>
+      <div class="card anim d4"><div class="idx">KIỂM CHỨNG</div><p style="font-family:var(--mono);font-size:19px;color:var(--ink);line-height:1.7;">JSON schema validation<br>LLM-as-judge (groundedness)<br>Bộ eval / golden set</p></div>
+      <div class="card anim d5"><div class="idx">QUAN TRẮC</div><p style="font-family:var(--mono);font-size:19px;color:var(--ink);line-height:1.7;">Tracing từng bước<br>Dashboard chi phí &amp; độ trễ<br>Audit log</p></div>
+      <div class="card anim d6"><div class="idx">GIAO DIỆN &amp; QUYỀN</div><p style="font-family:var(--mono);font-size:19px;color:var(--ink);line-height:1.7;">Chat + xem nguồn trích dẫn<br>Phân quyền theo vai trò<br>Con người duyệt (HITL)</p></div>
+    </div>
+  </div>
+  <div class="footer"><span>15 · Công nghệ</span><span>Harness Engineering</span></div>
+</section>
+
+<!-- ============ 16 · SECTION DIVIDER — HR ============ -->
+<section data-label="Phần · Case study HR" style="background:var(--ink);color:var(--paper);">
+  <div class="pad" style="justify-content:center;">
+    <div class="anim eyebrow" style="color:var(--accent-soft);">Phần IV</div>
+    <h2 class="anim d1" style="font-size:96px;color:var(--paper);margin-top:20px;line-height:1;">Case study:<br><span class="serif-it" style="color:var(--accent-soft)">Nhân sự (HR)</span></h2>
+    <p class="anim d2" style="font-size:26px;color:#C9C2B2;margin-top:34px;max-width:1080px;line-height:1.5;">
+      Bốn bài toán HR điển hình — và harness nào biến chúng thành đáng tin cậy, công bằng, kiểm toán được.
+    </p>
+  </div>
+  <div class="footer" style="color:#6f6a5d;border-top-color:#3a372f;"><span>16 · Case study HR</span><span>Harness Engineering</span></div>
+</section>
+
+<!-- ============ 17 · HR OVERVIEW ============ -->
+<section data-label="HR · Tổng quan">
+  <div class="pad">
+    <div class="kicker anim">Bốn bài toán HR</div>
+    <h2 class="anim d1" style="font-size:50px;margin-top:18px;">Cùng một harness, bốn ứng dụng</h2>
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:20px;margin-top:50px;flex:1;align-content:center;">
+      <div class="card anim d1"><div class="idx">CASE 01</div><h3 style="font-size:26px;">Sàng lọc &amp; Tuyển dụng</h3><p>Đọc CV, đối chiếu JD, chấm điểm có rubric &amp; lan can chống thiên kiến.</p></div>
+      <div class="card anim d2"><div class="idx">CASE 02</div><h3 style="font-size:26px;">Onboarding tự động</h3><p>Agent dẫn dắt nhân viên mới, tạo tài khoản, trả lời theo checklist.</p></div>
+      <div class="card anim d3"><div class="idx">CASE 03</div><h3 style="font-size:26px;">HR Helpdesk</h3><p>Trả lời chính sách/phúc lợi dựa trên tài liệu, kèm trích dẫn.</p></div>
+      <div class="card anim d4"><div class="idx">CASE 04</div><h3 style="font-size:26px;">Đánh giá &amp; Phản hồi</h3><p>Tổng hợp phản hồi 360°, soạn nháp đánh giá theo khung năng lực.</p></div>
+    </div>
+    <p class="anim d5" style="margin-top:44px;font-size:21px;color:var(--ink-2);max-width:1300px;">
+      Điểm chung: dữ liệu nhạy cảm, rủi ro pháp lý &amp; thiên kiến cao → <b>harness phải mạnh về lan can, trích dẫn và con người duyệt.</b>
+    </p>
+  </div>
+  <div class="footer"><span>17 · HR tổng quan</span><span>Harness Engineering</span></div>
+</section>
+
+<!-- ============ 18 · HR CASE 01 + 02 ============ -->
+<section data-label="HR · Case 1+2">
+  <div class="pad">
+    <div class="kicker anim">Case study HR · I</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:50px;margin-top:34px;flex:1;">
+      <!-- case 1 -->
+      <div class="anim d1" style="display:flex;flex-direction:column;">
+        <div style="display:flex;align-items:center;gap:16px;"><span class="badge acc">1</span><h2 style="font-size:34px;">Sàng lọc &amp; Tuyển dụng</h2></div>
+        <p style="font-size:20px;color:var(--ink-2);margin-top:18px;line-height:1.5;">Đọc hàng trăm CV, trích xuất kỹ năng/kinh nghiệm, đối chiếu mô tả công việc và đề xuất danh sách rút gọn.</p>
+        <div class="hbox">
+          <div class="hrow"><span class="hk">Công cụ</span><span class="hv">Parser CV · kho JD · rubric chấm điểm</span></div>
+          <div class="hrow"><span class="hk">Đầu ra</span><span class="hv">Bảng năng lực có cấu trúc + điểm khớp + lý do</span></div>
+          <div class="hrow"><span class="hk">Lan can</span><span class="hv">Ẩn thông tin nhạy cảm (tuổi, giới, ảnh); chỉ chấm theo tiêu chí công việc</span></div>
+          <div class="hrow"><span class="hk">HITL</span><span class="hv">Tuyển dụng viên luôn ra quyết định cuối; AI chỉ hỗ trợ</span></div>
+        </div>
+      </div>
+      <!-- case 2 -->
+      <div class="anim d3" style="display:flex;flex-direction:column;border-left:1.5px solid var(--line);padding-left:50px;">
+        <div style="display:flex;align-items:center;gap:16px;"><span class="badge acc">2</span><h2 style="font-size:34px;">Onboarding tự động</h2></div>
+        <p style="font-size:20px;color:var(--ink-2);margin-top:18px;line-height:1.5;">Một agent đồng hành cùng nhân viên mới: tạo checklist cá nhân hoá, mở tài khoản qua hệ thống, trả lời thắc mắc ngày đầu.</p>
+        <div class="hbox">
+          <div class="hrow"><span class="hk">Công cụ</span><span class="hv">Tích hợp HRIS · IT provisioning · lịch &amp; email</span></div>
+          <div class="hrow"><span class="hk">Đầu ra</span><span class="hv">Tiến trình onboarding theo trạng thái, có thể theo dõi</span></div>
+          <div class="hrow"><span class="hk">Lan can</span><span class="hv">Chỉ thao tác trong phạm vi quyền; ghi log mọi hành động</span></div>
+          <div class="hrow"><span class="hk">HITL</span><span class="hv">Hành động nhạy cảm (cấp quyền) cần HR xác nhận</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="footer"><span>18 · HR Case 1 &amp; 2</span><span>Harness Engineering</span></div>
+  <style>
+    .hbox{margin-top:24px;display:flex;flex-direction:column;gap:0;border-top:1.5px solid var(--line);}
+    .hrow{display:grid;grid-template-columns:120px 1fr;gap:18px;padding:14px 0;border-bottom:1.5px solid var(--line);align-items:baseline;}
+    .hrow .hk{font-family:var(--mono);font-size:14px;letter-spacing:.08em;text-transform:uppercase;color:var(--accent);}
+    .hrow .hv{font-size:19px;color:var(--ink);line-height:1.4;}
+  </style>
+</section>
+
+<!-- ============ 19 · HR CASE 03 + 04 ============ -->
+<section data-label="HR · Case 3+4">
+  <div class="pad">
+    <div class="kicker anim">Case study HR · II</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:50px;margin-top:34px;flex:1;">
+      <!-- case 3 -->
+      <div class="anim d1" style="display:flex;flex-direction:column;">
+        <div style="display:flex;align-items:center;gap:16px;"><span class="badge acc">3</span><h2 style="font-size:34px;">HR Helpdesk nội bộ</h2></div>
+        <p style="font-size:20px;color:var(--ink-2);margin-top:18px;line-height:1.5;">Trả lời câu hỏi về chính sách, phúc lợi, nghỉ phép — dựa trên tài liệu chính thức, kèm trích dẫn để nhân viên tự kiểm.</p>
+        <div class="hbox2">
+          <div class="hrow2"><span class="hk2">Công cụ</span><span class="hv2">RAG trên sổ tay nhân sự, quy chế, FAQ</span></div>
+          <div class="hrow2"><span class="hk2">Đầu ra</span><span class="hv2">Câu trả lời + link tới đúng điều khoản nguồn</span></div>
+          <div class="hrow2"><span class="hk2">Lan can</span><span class="hv2">Không suy diễn ngoài tài liệu; không tư vấn pháp lý cá nhân</span></div>
+          <div class="hrow2"><span class="hk2">HITL</span><span class="hv2">Câu hỏi nhạy cảm → chuyển HR; mọi phiên đều có audit log</span></div>
+        </div>
+      </div>
+      <!-- case 4 -->
+      <div class="anim d3" style="display:flex;flex-direction:column;border-left:1.5px solid var(--line);padding-left:50px;">
+        <div style="display:flex;align-items:center;gap:16px;"><span class="badge acc">4</span><h2 style="font-size:34px;">Đánh giá &amp; Phản hồi</h2></div>
+        <p style="font-size:20px;color:var(--ink-2);margin-top:18px;line-height:1.5;">Tổng hợp phản hồi 360°, soạn bản nháp đánh giá theo khung năng lực, gợi ý phản hồi mang tính xây dựng.</p>
+        <div class="hbox2">
+          <div class="hrow2"><span class="hk2">Công cụ</span><span class="hv2">Khung năng lực · dữ liệu phản hồi · mục tiêu KPI</span></div>
+          <div class="hrow2"><span class="hk2">Đầu ra</span><span class="hv2">Bản nháp có cấu trúc, trích dẫn bằng chứng cụ thể</span></div>
+          <div class="hrow2"><span class="hk2">Lan can</span><span class="hv2">Kiểm tra giọng điệu &amp; thiên kiến; chỉ dùng dữ kiện, không suy đoán</span></div>
+          <div class="hrow2"><span class="hk2">HITL</span><span class="hv2">Quản lý chỉnh sửa &amp; chịu trách nhiệm bản cuối</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="footer"><span>19 · HR Case 3 &amp; 4</span><span>Harness Engineering</span></div>
+  <style>
+    .hbox2{margin-top:24px;display:flex;flex-direction:column;gap:0;border-top:1.5px solid var(--line);}
+    .hrow2{display:grid;grid-template-columns:120px 1fr;gap:18px;padding:14px 0;border-bottom:1.5px solid var(--line);align-items:baseline;}
+    .hrow2 .hk2{font-family:var(--mono);font-size:14px;letter-spacing:.08em;text-transform:uppercase;color:var(--accent);}
+    .hrow2 .hv2{font-size:19px;color:var(--ink);line-height:1.4;}
+  </style>
+</section>
+
+<!-- ============ 20 · SECTION DIVIDER — APPLY ============ -->
+<section data-label="Phần · Áp dụng" style="background:var(--ink);color:var(--paper);">
+  <div class="pad" style="justify-content:center;">
+    <div class="anim eyebrow" style="color:var(--accent-soft);">Phần V</div>
+    <h2 class="anim d1" style="font-size:96px;color:var(--paper);margin-top:20px;line-height:1;">Áp dụng vào<br>một <span class="serif-it" style="color:var(--accent-soft)">dự án</span></h2>
+    <p class="anim d2" style="font-size:26px;color:#C9C2B2;margin-top:34px;max-width:1000px;line-height:1.5;">
+      Lộ trình sáu bước, cách đo lường, và những rủi ro cần phòng.
+    </p>
+  </div>
+  <div class="footer" style="color:#6f6a5d;border-top-color:#3a372f;"><span>20 · Áp dụng</span><span>Harness Engineering</span></div>
+</section>
+
+<!-- ============ 21 · ROADMAP ============ -->
+<section data-label="Lộ trình">
+  <div class="pad">
+    <div class="kicker anim">Lộ trình triển khai</div>
+    <h2 class="anim d1" style="font-size:50px;margin-top:18px;">Sáu bước đưa harness vào một dự án</h2>
+    <div style="display:flex;flex-direction:column;gap:0;margin-top:42px;flex:1;justify-content:center;">
+      <div class="step anim d1"><span class="stn">01</span><div class="stc"><h3>Chọn một bài toán hẹp, giá trị cao</h3><p>Một use case rõ ràng, đo được ROI — ví dụ "tra cứu hợp đồng" hoặc "HR helpdesk".</p></div></div>
+      <div class="step anim d2"><span class="stn">02</span><div class="stc"><h3>Chuẩn hoá dữ liệu</h3><p>Gom nguồn tài liệu, làm sạch, phân quyền. Dữ liệu sẵn sàng quyết định 70% kết quả.</p></div></div>
+      <div class="step anim d3"><span class="stn">03</span><div class="stc"><h3>Dựng harness "mỏng"</h3><p>Một công cụ + truy hồi + đầu ra có schema. Chạy được đầu–cuối trước, tinh chỉnh sau.</p></div></div>
+      <div class="step anim d4"><span class="stn">04</span><div class="stc"><h3>Xây bộ eval &amp; golden set</h3><p>Bộ câu hỏi–đáp chuẩn để chấm điểm tự động mỗi lần thay đổi. Đây là "lưới an toàn".</p></div></div>
+      <div class="step anim d5"><span class="stn">05</span><div class="stc"><h3>Thêm lan can &amp; con người duyệt</h3><p>Ngưỡng tin cậy, trích dẫn bắt buộc, audit log, điểm dừng cho việc rủi ro cao.</p></div></div>
+      <div class="step anim d6"><span class="stn" style="background:var(--accent);">06</span><div class="stc"><h3>Thí điểm → Quan trắc → Mở rộng</h3><p>Chạy pilot có người giám sát, theo dõi số liệu, rồi mở rộng phạm vi &amp; thêm công cụ.</p></div></div>
+    </div>
+  </div>
+  <div class="footer"><span>21 · Lộ trình</span><span>Harness Engineering</span></div>
+  <style>
+    .step{display:grid;grid-template-columns:96px 1fr;gap:30px;align-items:center;padding:16px 0;border-bottom:1.5px solid var(--line);}
+    .step:first-child{border-top:1.5px solid var(--line);}
+    .step .stn{font-family:var(--display);font-size:34px;color:var(--paper);background:var(--ink);width:64px;height:64px;border-radius:50%;display:flex;align-items:center;justify-content:center;}
+    .step .stc h3{font-size:27px;}
+    .step .stc p{font-size:20px;color:var(--ink-2);margin-top:5px;line-height:1.4;}
+  </style>
+</section>
+
+<!-- ============ 22 · METRICS ============ -->
+<section data-label="Đo lường">
+  <div class="pad">
+    <div class="kicker anim">Đo lường</div>
+    <h2 class="anim d1" style="font-size:50px;margin-top:18px;">Đo cái gì để biết harness "tốt"?</h2>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:24px;margin-top:50px;flex:1;align-content:center;">
+      <div class="metric anim d1"><div class="mv">Task success</div><p>Tỷ lệ hoàn thành đúng tác vụ đầu–cuối.</p></div>
+      <div class="metric anim d2"><div class="mv">Groundedness</div><p>Tỷ lệ câu trả lời có căn cứ &amp; trích dẫn đúng nguồn.</p></div>
+      <div class="metric anim d3"><div class="mv">Hallucination</div><p>Tỷ lệ bịa / sai cần kéo về sát 0.</p></div>
+      <div class="metric anim d4"><div class="mv">Escalation rate</div><p>Tỷ lệ chuyển con người — chỉ báo độ tự tin &amp; an toàn.</p></div>
+      <div class="metric anim d5"><div class="mv">Cost / Latency</div><p>Chi phí &amp; thời gian mỗi tác vụ — quyết định khả thi vận hành.</p></div>
+      <div class="metric anim d6"><div class="mv">Human-edit rate</div><p>Mức con người phải sửa đầu ra — thước đo chất lượng thực tế.</p></div>
+    </div>
+    <p class="anim d6" style="margin-top:40px;font-family:var(--display);font-style:italic;font-size:28px;color:var(--ink);">Nguyên tắc vàng: <span class="accent">không đo được thì không cải tiến được.</span></p>
+  </div>
+  <div class="footer"><span>22 · Đo lường</span><span>Harness Engineering</span></div>
+  <style>
+    .metric{border:1.5px solid var(--line);border-radius:4px;padding:30px 32px;display:flex;flex-direction:column;gap:12px;background:rgba(255,255,255,.32);}
+    .metric .mv{font-family:var(--display);font-size:32px;color:var(--accent);font-weight:500;}
+    .metric p{font-size:20px;color:var(--ink-2);line-height:1.45;}
+  </style>
+</section>
+
+<!-- ============ 23 · RISKS ============ -->
+<section data-label="Rủi ro">
+  <div class="pad">
+    <div class="kicker anim">Rủi ro &amp; phòng ngừa</div>
+    <h2 class="anim d1" style="font-size:50px;margin-top:18px;">Bốn rủi ro thường gặp</h2>
+    <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:26px 50px;margin-top:48px;flex:1;align-content:center;">
+      <div class="anim d1" style="border-left:3px solid var(--accent);padding-left:26px;"><h3 style="font-size:28px;">Bịa thông tin tự tin</h3><p style="font-size:20px;color:var(--ink-2);margin-top:10px;line-height:1.5;"><b>Phòng:</b> bắt buộc trích dẫn, từ chối khi không có nguồn, eval groundedness liên tục.</p></div>
+      <div class="anim d2" style="border-left:3px solid var(--accent);padding-left:26px;"><h3 style="font-size:28px;">Rò rỉ &amp; quyền truy cập</h3><p style="font-size:20px;color:var(--ink-2);margin-top:10px;line-height:1.5;"><b>Phòng:</b> phân quyền theo vai trò, lọc dữ liệu nhạy cảm, audit log đầy đủ.</p></div>
+      <div class="anim d3" style="border-left:3px solid var(--accent);padding-left:26px;"><h3 style="font-size:28px;">Thiên kiến (đặc biệt HR)</h3><p style="font-size:20px;color:var(--ink-2);margin-top:10px;line-height:1.5;"><b>Phòng:</b> chỉ chấm theo tiêu chí công việc, ẩn thuộc tính nhạy cảm, kiểm thử công bằng.</p></div>
+      <div class="anim d4" style="border-left:3px solid var(--accent);padding-left:26px;"><h3 style="font-size:28px;">Mất kiểm soát chi phí</h3><p style="font-size:20px;color:var(--ink-2);margin-top:10px;line-height:1.5;"><b>Phòng:</b> giới hạn số bước, cache, theo dõi chi phí/độ trễ theo từng tác vụ.</p></div>
+    </div>
+  </div>
+  <div class="footer"><span>23 · Rủi ro</span><span>Harness Engineering</span></div>
+</section>
+
+<!-- ============ 24 · TAKEAWAYS / CLOSE ============ -->
+<section data-label="Tổng kết" style="background:var(--ink);color:var(--paper);">
+  <div class="pad">
+    <div class="kicker anim" style="color:var(--accent-soft);">Tổng kết</div>
+    <h2 class="anim d1" style="font-size:66px;margin-top:24px;color:var(--paper);max-width:1400px;">Ba điều cần nhớ</h2>
+
+    <div style="display:flex;flex-direction:column;gap:0;margin-top:54px;flex:1;justify-content:center;">
+      <div class="take anim d2"><span class="tn">01</span><p><b style="color:var(--paper)">Agent = Model + Harness.</b> Mô hình đang thành "hàng hoá"; giá trị &amp; lợi thế cạnh tranh dịch chuyển về harness.</p></div>
+      <div class="take anim d3"><span class="tn">02</span><p><b style="color:var(--paper)">Độ tin cậy là kỹ thuật, không phải may rủi.</b> Truy hồi, schema, trích dẫn, eval, lan can &amp; con người duyệt — là thứ đo được và cải tiến được.</p></div>
+      <div class="take anim d4"><span class="tn">03</span><p><b style="color:var(--paper)">Bắt đầu mỏng, đo sớm, mở rộng dần.</b> Một bài toán hẹp + một harness chắc chắn — rồi nhân rộng ra toàn doanh nghiệp.</p></div>
+    </div>
+
+    <p class="anim d5" style="font-family:var(--display);font-style:italic;font-size:36px;color:var(--accent-soft);margin-top:30px;max-width:1300px;">
+      Đừng hỏi “mô hình nào mạnh nhất”. Hãy hỏi “harness của ta đã đủ chắc chưa”.
+    </p>
+  </div>
+  <div class="footer" style="color:#6f6a5d;border-top-color:#3a372f;"><span>24 · Tổng kết</span><span>Harness Engineering</span></div>
+  <style>
+    .take{display:grid;grid-template-columns:90px 1fr;gap:28px;align-items:baseline;padding:22px 0;border-bottom:1.5px solid #3a372f;}
+    .take:first-child{border-top:1.5px solid #3a372f;}
+    .take .tn{font-family:var(--display);font-size:40px;color:var(--accent-soft);}
+    .take p{font-size:25px;color:#C9C2B2;line-height:1.5;}
+  </style>
+</section>
+
+</deck-stage>
+
+<template id="__bundler_thumbnail">
+<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+  <rect width="100" height="100" fill="#1C1A15"/>
+  <circle cx="50" cy="50" r="22" fill="none" stroke="#B0542F" stroke-width="3"/>
+  <circle cx="50" cy="50" r="7" fill="#F4F1EA"/>
+  <line x1="50" y1="28" x2="50" y2="14" stroke="#B0542F" stroke-width="3"/>
+  <line x1="50" y1="72" x2="50" y2="86" stroke="#B0542F" stroke-width="3"/>
+  <line x1="28" y1="50" x2="14" y2="50" stroke="#B0542F" stroke-width="3"/>
+  <line x1="72" y1="50" x2="86" y2="50" stroke="#B0542F" stroke-width="3"/>
+</svg>
+</template>
+
+<script src="deck-stage.js"></script>
+</body>
+</html>
