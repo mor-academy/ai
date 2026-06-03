@@ -1,0 +1,886 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Harness cho SDLC — Kịch bản áp dụng cụ thể</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400&family=Be+Vietnam+Pro:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  deck-stage:not(:defined){visibility:hidden}
+  :root{
+    --paper:#F4F1EA;
+    --paper-2:#ECE7DC;
+    --ink:#1C1A15;
+    --ink-2:#5B564B;
+    --ink-3:#8C8576;
+    --line:#D6CFC0;
+    --line-2:#C5BCA8;
+    --accent:#B0542F;
+    --accent-soft:#E6D3C5;
+    --accent-ink:#7E3B1F;
+    --good:#3F6B53;
+    --warn:#A8761A;
+    --display:"Newsreader",Georgia,serif;
+    --sans:"Be Vietnam Pro",system-ui,sans-serif;
+    --mono:"IBM Plex Mono",monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{background:#15140f;}
+  deck-stage{background:#15140f;}
+  section{background:var(--paper);color:var(--ink);font-family:var(--sans);font-weight:400;overflow:hidden;-webkit-font-smoothing:antialiased;}
+  .pad{position:absolute;inset:0;padding:80px 100px;display:flex;flex-direction:column;}
+  .kicker{font-family:var(--mono);font-size:18px;letter-spacing:.22em;text-transform:uppercase;color:var(--accent);font-weight:500;display:flex;align-items:center;gap:14px;}
+  .kicker::before{content:"";width:30px;height:1.5px;background:var(--accent);display:inline-block;}
+  .eyebrow{font-family:var(--mono);font-size:16px;letter-spacing:.2em;text-transform:uppercase;color:var(--ink-3);font-weight:500;}
+  h1,h2,h3{font-family:var(--display);font-weight:500;line-height:1.04;letter-spacing:-.01em;}
+  .lead{font-size:24px;line-height:1.5;color:var(--ink-2);font-weight:300;}
+  .footer{position:absolute;left:100px;right:100px;bottom:42px;display:flex;justify-content:space-between;font-family:var(--mono);font-size:14px;letter-spacing:.08em;color:var(--ink-3);text-transform:uppercase;border-top:1.5px solid var(--line);padding-top:14px;}
+  .accent{color:var(--accent);}
+  .serif-it{font-family:var(--display);font-style:italic;font-weight:400;}
+  b,strong{font-weight:600;color:var(--ink);}
+  code{font-family:var(--mono);font-size:.88em;color:var(--accent-ink);background:rgba(176,84,47,.08);padding:1px 6px;border-radius:3px;}
+
+  /* === scenario step === */
+  .scn{display:grid;grid-template-columns:96px 1fr;gap:18px;border:1.5px solid var(--line);border-radius:4px;padding:16px 20px;background:rgba(255,255,255,.4);}
+  .scn .who{font-family:var(--mono);font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--accent);font-weight:500;display:flex;flex-direction:column;gap:4px;padding-top:2px;border-right:1px solid var(--line);padding-right:14px;}
+  .scn .who b{color:var(--accent-ink);font-size:13px;}
+  .scn .what{font-size:15.5px;color:var(--ink-2);line-height:1.55;}
+  .scn .what b{color:var(--ink);}
+  .scn .what em{font-style:normal;color:var(--accent-ink);font-weight:600;}
+  .scn .what .tool{display:inline-block;font-family:var(--mono);font-size:12.5px;color:var(--accent);background:rgba(176,84,47,.08);border:1px solid rgba(176,84,47,.25);padding:1px 7px;border-radius:3px;margin-right:4px;}
+
+  .codebox{background:#1C1A15;color:#E8E2D2;border-radius:5px;padding:18px 22px;font-family:var(--mono);font-size:14px;line-height:1.6;white-space:pre;overflow:hidden;}
+  .codebox .cm{color:#8C8576;}
+  .codebox .kw{color:#E6D3C5;}
+  .codebox .st{color:#C9B58A;}
+  .codebox .nu{color:#B0542F;}
+  .codebox .fn{color:#9CB89F;}
+  .codebox .me{color:#D9A876;}
+
+  .pill{display:inline-flex;align-items:center;gap:8px;font-family:var(--mono);font-size:14px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-2);border:1.5px solid var(--line-2);border-radius:999px;padding:6px 14px;}
+
+  table.spec{width:100%;border-collapse:collapse;font-size:14px;}
+  table.spec th,table.spec td{text-align:left;padding:9px 12px;border-bottom:1px solid var(--line);vertical-align:top;}
+  table.spec th{font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3);font-weight:500;}
+  table.spec td b{color:var(--ink);}
+
+  .outcome{margin-top:6px;font-size:13.5px;color:var(--good);font-weight:500;display:flex;align-items:center;gap:6px;}
+  .outcome::before{content:"✓";font-weight:700;}
+
+  .home-btn{position:fixed;top:20px;left:20px;z-index:1000;display:inline-flex;align-items:center;gap:8px;padding:9px 16px 9px 12px;background:#FFF;border:1px solid #D9D2BE;border-radius:999px;font-family:'Be Vietnam Pro',sans-serif;font-size:13px;font-weight:500;color:#1A1A1A;text-decoration:none;box-shadow:0 4px 14px -6px rgba(0,0,0,.18);transition:transform .15s,border-color .15s,color .15s;}
+  .home-btn:hover{border-color:#B5481C;color:#B5481C;transform:translateY(-1px);}
+  .home-btn-arrow{font-size:16px;line-height:1;transition:transform .15s;}
+  .home-btn:hover .home-btn-arrow{transform:translateX(-3px);}
+
+  @media (prefers-reduced-motion:no-preference){
+    [data-deck-active] .anim{opacity:0;transform:translateY(18px);animation:rise .6s cubic-bezier(.2,.7,.2,1) forwards;}
+    [data-deck-active] .anim.d1{animation-delay:.06s}
+    [data-deck-active] .anim.d2{animation-delay:.12s}
+    [data-deck-active] .anim.d3{animation-delay:.18s}
+    [data-deck-active] .anim.d4{animation-delay:.24s}
+    [data-deck-active] .anim.d5{animation-delay:.30s}
+    [data-deck-active] .anim.d6{animation-delay:.36s}
+    @keyframes rise{to{opacity:1;transform:none}}
+  }
+</style>
+</head>
+<body>
+
+<a href="index.html" class="home-btn" aria-label="Về trang chính">
+  <span class="home-btn-arrow">←</span>
+  <span>Trang chính</span>
+</a>
+
+<deck-stage width="1920" height="1080">
+
+<!-- ============ 01 · TITLE + SAMPLE TEAM ============ -->
+<section data-label="Bìa · Team mẫu">
+  <div class="pad" style="justify-content:space-between;">
+    <div class="anim" style="display:flex;justify-content:space-between;align-items:flex-start;">
+      <div class="kicker">Tài liệu kỹ thuật &nbsp;·&nbsp; Playbook</div>
+      <div class="eyebrow">2026</div>
+    </div>
+
+    <div style="max-width:1500px;">
+      <div class="anim d1 eyebrow" style="margin-bottom:22px;">Harness Engineering · Áp dụng</div>
+      <h1 class="anim d2" style="font-size:96px;line-height:.98;">Harness trong<br><span class="accent serif-it">Software Development</span></h1>
+      <p class="anim d3 lead" style="margin-top:30px;max-width:1280px;">
+        Team 8 người dùng <b>Claude Code + Linear MCP + CodeRabbit</b> trên monorepo Next.js — từ nhận ticket,
+        sửa bug 23:47, refactor 30 file, đến onboarding dev mới ngày thứ 3 đã merge PR đầu.
+      </p>
+    </div>
+
+    <div class="anim d4" style="border:1.5px solid var(--line-2);border-radius:4px;padding:22px 26px;background:rgba(255,255,255,.4);">
+      <div class="eyebrow" style="margin-bottom:14px;">Team mẫu — dùng xuyên suốt các kịch bản</div>
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:22px;">
+        <div><b style="color:var(--accent-ink);">8 thành viên</b><p style="font-size:15px;color:var(--ink-2);margin-top:3px;">3 BE · 3 FE · 1 QA · 1 Tech Lead</p></div>
+        <div><b style="color:var(--accent-ink);">Monorepo</b><p style="font-size:15px;color:var(--ink-2);margin-top:3px;">pnpm workspaces · TS · Node + Next.js · Postgres</p></div>
+        <div><b style="color:var(--accent-ink);">Stack quy trình</b><p style="font-size:15px;color:var(--ink-2);margin-top:3px;">Linear (ticket) · GitHub (PR) · Slack · Sentry · Vercel</p></div>
+        <div><b style="color:var(--accent-ink);">AI tooling</b><p style="font-size:15px;color:var(--ink-2);margin-top:3px;">Claude Code (CLI + IDE) · CodeRabbit (PR) · Linear MCP · GitHub Actions</p></div>
+      </div>
+    </div>
+  </div>
+  <div class="footer"><span>Harness for SDLC · Playbook</span><span>Team · Coding · Testing</span></div>
+</section>
+
+<!-- ============ 02 · DAY 0 SETUP ============ -->
+<section data-label="Day 0 Setup">
+  <div class="pad">
+    <div class="kicker anim">Ngày 0 · Foundation</div>
+    <h2 class="anim d1" style="font-size:38px;margin-top:12px;">3 file commit vào repo — cả team dùng chung từ giờ</h2>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:18px;margin-top:24px;flex:1;">
+
+      <div class="anim d2">
+        <div class="eyebrow" style="margin-bottom:10px;">1 · <code>CLAUDE.md</code> ở root</div>
+        <div class="codebox"><span class="cm"># Acme Web · Conventions</span>
+
+<span class="cm">## Stack</span>
+- Next.js 15 (App Router)
+- Postgres + Drizzle ORM
+- Tailwind + shadcn/ui
+
+<span class="cm">## Build/test/lint</span>
+- <span class="kw">pnpm dev</span>     <span class="cm"># dev server</span>
+- <span class="kw">pnpm test</span>    <span class="cm"># vitest scoped</span>
+- <span class="kw">pnpm lint</span>    <span class="cm"># eslint --fix</span>
+- <span class="kw">pnpm tc</span>      <span class="cm"># tsc --noEmit</span>
+
+<span class="cm">## Quy ước</span>
+- File mới: kebab-case
+- Server action: <span class="kw">app/_actions/</span>
+- Không dùng <span class="kw">useEffect</span> để
+  fetch — dùng RSC.
+
+<span class="cm">## Trước khi tạo PR</span>
+1. <span class="kw">pnpm tc &amp;&amp; pnpm lint &amp;&amp; pnpm test</span>
+2. <span class="kw">/code-review</span> trên diff
+3. Commit theo <span class="kw">conventional</span>
+</div>
+        <p style="margin-top:10px;font-size:13px;color:var(--ink-3);line-height:1.5;">
+          <b>Tác dụng:</b> AI đọc trước mọi task — không hỏi lại "dùng npm hay pnpm?", "test bằng gì?".
+        </p>
+      </div>
+
+      <div class="anim d3">
+        <div class="eyebrow" style="margin-bottom:10px;">2 · <code>.claude/settings.json</code></div>
+        <div class="codebox">{
+  <span class="kw">"permissions"</span>: {
+    <span class="kw">"allow"</span>: [
+      <span class="st">"Bash(pnpm *)"</span>,
+      <span class="st">"Bash(git status)"</span>,
+      <span class="st">"Bash(git diff *)"</span>,
+      <span class="st">"Bash(gh pr view *)"</span>,
+      <span class="st">"Read"</span>, <span class="st">"Grep"</span>, <span class="st">"Glob"</span>
+    ],
+    <span class="kw">"ask"</span>: [
+      <span class="st">"Bash(git push *)"</span>,
+      <span class="st">"Bash(gh pr create *)"</span>,
+      <span class="st">"Edit"</span>, <span class="st">"Write"</span>
+    ],
+    <span class="kw">"deny"</span>: [
+      <span class="st">"Bash(rm -rf *)"</span>,
+      <span class="st">"Bash(git push --force *)"</span>
+    ]
+  },
+  <span class="kw">"hooks"</span>: {
+    <span class="kw">"PostToolUse"</span>: [{
+      <span class="kw">"matcher"</span>: <span class="st">"Edit|Write"</span>,
+      <span class="kw">"command"</span>: <span class="st">"pnpm exec prettier -w $FILE"</span>
+    }]
+  }
+}</div>
+        <p style="margin-top:10px;font-size:13px;color:var(--ink-3);line-height:1.5;">
+          <b>Tác dụng:</b> dev không bị prompt cho lệnh đọc; mọi write tự format; lệnh nguy hiểm bị chặn cứng.
+        </p>
+      </div>
+
+      <div class="anim d4">
+        <div class="eyebrow" style="margin-bottom:10px;">3 · <code>.mcp.json</code> — kết nối hệ thống nội bộ</div>
+        <div class="codebox">{
+  <span class="kw">"mcpServers"</span>: {
+    <span class="kw">"linear"</span>: {
+      <span class="kw">"command"</span>: <span class="st">"npx"</span>,
+      <span class="kw">"args"</span>: [<span class="st">"-y"</span>,<span class="st">"@linear/mcp"</span>],
+      <span class="kw">"env"</span>: {<span class="kw">"LINEAR_API_KEY"</span>: <span class="st">"$LINEAR"</span>}
+    },
+    <span class="kw">"sentry"</span>: {
+      <span class="kw">"command"</span>: <span class="st">"npx"</span>,
+      <span class="kw">"args"</span>: [<span class="st">"-y"</span>,<span class="st">"@sentry/mcp"</span>]
+    },
+    <span class="kw">"postgres-dev"</span>: {
+      <span class="kw">"command"</span>: <span class="st">"npx"</span>,
+      <span class="kw">"args"</span>: [<span class="st">"-y"</span>,<span class="st">"@modelcontextprotocol/server-postgres"</span>,
+              <span class="st">"$DEV_DB_URL"</span>]
+    }
+  }
+}</div>
+        <p style="margin-top:10px;font-size:13px;color:var(--ink-3);line-height:1.5;">
+          <b>Tác dụng:</b> AI đọc được Linear ticket, Sentry error, query DB dev — không copy-paste link.
+        </p>
+      </div>
+
+    </div>
+
+    <div class="anim d6" style="margin-top:18px;border-left:3px solid var(--accent);padding:10px 16px;background:rgba(176,84,47,.05);">
+      <b style="color:var(--accent-ink);">Onboarding dev mới:</b>
+      <span style="font-size:15px;color:var(--ink-2);"> <code>git clone</code> + <code>claude</code> — 3 file trên đã có. Không cần wiki page riêng, không cần training.</span>
+    </div>
+  </div>
+  <div class="footer"><span>02 · Day 0 setup</span><span>Harness for SDLC</span></div>
+</section>
+
+<!-- ============ 03 · SCENARIO 1 · FEATURE ============ -->
+<section data-label="KB1 · Feature">
+  <div class="pad">
+    <div class="kicker anim">Kịch bản 1 · Dev FE nhận ticket feature</div>
+    <h2 class="anim d1" style="font-size:36px;margin-top:12px;">
+      <span class="serif-it accent">Linh (FE)</span> — ticket <code>WEB-412</code>: "Thêm filter theo trạng thái vào trang Orders"
+    </h2>
+
+    <div style="display:flex;flex-direction:column;gap:10px;margin-top:22px;flex:1;justify-content:center;">
+
+      <div class="scn anim d2">
+        <div class="who"><b>10:02</b><span>Linh</span></div>
+        <div class="what">
+          Mở <span class="tool">Claude Code</span> trong worktree mới: <code>git worktree add ../web-412 -b feat/web-412</code> → <code>cd ../web-412 &amp;&amp; claude</code>.
+          Gõ: "Đọc Linear <em>WEB-412</em> và lập plan, không sửa code".
+          <div class="outcome">Worktree riêng → không đụng branch đang dở của teammate.</div>
+        </div>
+      </div>
+
+      <div class="scn anim d3">
+        <div class="who"><b>10:03</b><span>Claude</span></div>
+        <div class="what">
+          Gọi MCP <span class="tool">linear.get_issue("WEB-412")</span> → đọc acceptance criteria. Gọi <span class="tool">Grep "OrderTable"</span> → tìm component hiện tại ở <code>app/orders/_components/order-table.tsx</code>.
+          Trả về plan: <b>(a)</b> thêm <code>status</code> vào URL search params · <b>(b)</b> sửa server action <code>listOrders</code> nhận filter · <b>(c)</b> thêm <code>&lt;StatusFilter/&gt;</code> dropdown · <b>(d)</b> 3 test mới.
+          <div class="outcome">Plan dài 8 dòng, Linh đọc 30 giây.</div>
+        </div>
+      </div>
+
+      <div class="scn anim d4">
+        <div class="who"><b>10:05</b><span>Linh</span></div>
+        <div class="what">
+          "OK nhưng filter phải <em>multi-select</em>, không phải single." Plan được sửa. Approve.
+          <div class="outcome">Quyết định "single vs multi" được chốt <b>trước</b> khi viết code — không phải sau khi đã 200 dòng.</div>
+        </div>
+      </div>
+
+      <div class="scn anim d5">
+        <div class="who"><b>10:06–10:18</b><span>Claude</span></div>
+        <div class="what">
+          Thực hiện plan: Edit 4 file. Sau mỗi edit chạy <span class="tool">pnpm tc</span> + <span class="tool">pnpm test orders</span>. Lần 2 test fail vì missing <code>?? []</code> cho status param — tự đọc log, sửa, chạy lại → xanh.
+          <div class="outcome">Linh đi pha cà phê. Quay lại thấy diff sạch + test pass.</div>
+        </div>
+      </div>
+
+      <div class="scn anim d6">
+        <div class="who"><b>10:19</b><span>Linh</span></div>
+        <div class="what">
+          "<code>/code-review</code>" → bot tự soi diff, gắn 2 nit (naming + missing aria-label). Linh "fix cả 2" → fix.
+          Cuối: "<code>/commit</code> + <code>/pr</code>" — PR mở ra với title từ Linear, body có checklist từ acceptance criteria.
+          <div class="outcome">Issue → PR: <b>22 phút</b>. Linh chỉ ra <b>2 quyết định</b> (multi-select, fix nit).</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+  <div class="footer"><span>03 · KB1 · Feature</span><span>Harness for SDLC</span></div>
+</section>
+
+<!-- ============ 04 · SCENARIO 2 · BUG ============ -->
+<section data-label="KB2 · Bug prod">
+  <div class="pad">
+    <div class="kicker anim">Kịch bản 2 · Bug production lúc 23:47</div>
+    <h2 class="anim d1" style="font-size:36px;margin-top:12px;">
+      <span class="serif-it accent">Tú (BE on-call)</span> — Sentry alert: <code>PaymentTimeoutError</code> spike, 47 events/5min
+    </h2>
+
+    <div style="display:flex;flex-direction:column;gap:10px;margin-top:22px;flex:1;justify-content:center;">
+
+      <div class="scn anim d2">
+        <div class="who"><b>23:47</b><span>Slack bot</span></div>
+        <div class="what">
+          Webhook Sentry → <span class="tool">triage-agent</span> (GitHub Action) → post Slack: "Spike <code>PaymentTimeoutError</code>. Stack trace top: <code>stripe.ts:142</code>. PR gần nhất chạm file này: <em>#3812 merged 22:31</em> bởi Hùng. Suggest: revert?"
+          <div class="outcome">Tú có thông tin có ích trong &lt; 30s — không cần mở 5 tab.</div>
+        </div>
+      </div>
+
+      <div class="scn anim d3">
+        <div class="who"><b>23:49</b><span>Tú</span></div>
+        <div class="what">
+          Mở <span class="tool">Claude Code</span>: "<code>/incident PaymentTimeoutError</code>" — skill nội bộ tự: kéo 10 event Sentry gần nhất, fetch PR #3812 diff, query DB dev xem schema <code>payments</code>.
+          AI báo: "Sentry trace cho thấy timeout ở <code>stripe.confirmPayment</code>; PR #3812 đổi default timeout từ 30s → 5s. <em>Khả năng cao đây là nguyên nhân.</em>"
+          <div class="outcome">Hypothesis cụ thể, dựa trên dữ liệu — không phải đoán.</div>
+        </div>
+      </div>
+
+      <div class="scn anim d4">
+        <div class="who"><b>23:51</b><span>Tú</span></div>
+        <div class="what">
+          "Revert chỉ field <code>timeout</code> trong file đó, giữ phần còn lại. Mở hotfix PR." Claude tạo branch <code>hotfix/payment-timeout</code>, sửa 1 dòng, viết test regression, mở PR. Tag <em>Hùng</em> + <em>Tech Lead</em>.
+          <div class="outcome">Hotfix PR ready trong 4 phút từ alert.</div>
+        </div>
+      </div>
+
+      <div class="scn anim d5">
+        <div class="who"><b>23:55</b><span>Tech Lead</span></div>
+        <div class="what">
+          Approve trên mobile. <span class="tool">GitHub Actions</span> auto-merge + deploy. Sentry spike dừng lúc 23:58.
+          <div class="outcome">MTTR <b>11 phút</b>. Tú không cần đánh thức Hùng.</div>
+        </div>
+      </div>
+
+      <div class="scn anim d6">
+        <div class="who"><b>Sáng hôm sau</b><span>Hùng</span></div>
+        <div class="what">
+          Mở Claude: "Viết post-mortem cho incident PaymentTimeout đêm qua, dùng template <code>.github/INCIDENT.md</code>." AI gom trace, PR, commit, Slack thread → draft post-mortem. Hùng sửa 2 đoạn, publish.
+          <div class="outcome">Post-mortem 30 phút thay vì 2 giờ — và <b>không bị bỏ qua</b> như thường xảy ra.</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+  <div class="footer"><span>04 · KB2 · Bug production</span><span>Harness for SDLC</span></div>
+</section>
+
+<!-- ============ 05 · SCENARIO 3 · REFACTOR ============ -->
+<section data-label="KB3 · Refactor lớn">
+  <div class="pad">
+    <div class="kicker anim">Kịch bản 3 · Refactor lớn động chạm 30 file</div>
+    <h2 class="anim d1" style="font-size:36px;margin-top:12px;">
+      <span class="serif-it accent">Tech Lead</span> — "Tách <code>useAuth</code> hook thành provider + hook, đụng ~30 file"
+    </h2>
+
+    <div style="display:flex;flex-direction:column;gap:10px;margin-top:22px;flex:1;justify-content:center;">
+
+      <div class="scn anim d2">
+        <div class="who"><b>Bước 1</b><span>Lead</span></div>
+        <div class="what">
+          "<code>/plan</code> refactor: tách <code>useAuth</code> thành <code>&lt;AuthProvider&gt;</code> + <code>useAuth()</code> consumer. <em>Không sửa gì, chỉ liệt kê file + thứ tự đổi + chia thành stack PR.</em>"
+          Claude grep callers (28 file), nhóm theo module → đề xuất <b>3 PR tuần tự</b>:
+          PR1 (infra: provider mới) · PR2 (migrate FE: 18 file) · PR3 (migrate BE-related: 10 file).
+          <div class="outcome">Lead thấy bức tranh full trước khi commit 1 dòng.</div>
+        </div>
+      </div>
+
+      <div class="scn anim d3">
+        <div class="who"><b>Bước 2</b><span>Lead</span></div>
+        <div class="what">
+          Tạo Linear epic <code>REFAC-7</code> với 3 subtask. Mỗi subtask <span class="tool">spawn background agent</span>:<br>
+          <code>claude --headless --task "Linear REFAC-7-1" --worktree ../refac-pr1</code>.
+          3 worktree song song, mỗi cái 1 branch.
+          <div class="outcome">3 PR chuẩn bị song song trong nền — Lead làm việc khác.</div>
+        </div>
+      </div>
+
+      <div class="scn anim d4">
+        <div class="who"><b>Bước 3</b><span>Conflict detection</span></div>
+        <div class="what">
+          PR2 đụng file <code>order-table.tsx</code> mà Linh đang sửa ở WEB-412 (KB1). <span class="tool">GitHub Action</span> <em>file-lock-warning</em> phát hiện overlap → comment vào cả 2 PR: "⚠ chồng lấn, đề xuất merge WEB-412 trước".
+          <div class="outcome">Phát hiện conflict <b>khi PR vừa mở</b>, không phải lúc rebase 2 ngày sau.</div>
+        </div>
+      </div>
+
+      <div class="scn anim d5">
+        <div class="who"><b>Bước 4</b><span>Sau merge PR1</span></div>
+        <div class="what">
+          Background agent của PR2/PR3 nhận event "PR1 merged" qua <span class="tool">GitHub webhook → MCP</span>, tự rebase, chạy lại test, push update. Nếu conflict thật → ping Lead trên Slack.
+          <div class="outcome">Stack PR tự đồng bộ — không phải rebase tay từng cái.</div>
+        </div>
+      </div>
+
+      <div class="scn anim d6">
+        <div class="who"><b>Kết</b><span>Tổng</span></div>
+        <div class="what">
+          3 PR merge trong 2 ngày thay vì 1 tuần. Lead làm <b>4 quyết định</b>: approve plan · approve chia stack · resolve 1 conflict logic · final review. Code: AI viết, test: AI viết &amp; chạy, rebase: AI làm.
+          <div class="outcome">Refactor lớn không còn bị trì hoãn vì "ngại đụng vào".</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+  <div class="footer"><span>05 · KB3 · Refactor lớn</span><span>Harness for SDLC</span></div>
+</section>
+
+<!-- ============ 06 · MULTI-DEV COORDINATION ============ -->
+<section data-label="Phối hợp 8 người">
+  <div class="pad">
+    <div class="kicker anim">Phối hợp 8 người · Tránh dẫm chân</div>
+    <h2 class="anim d1" style="font-size:38px;margin-top:12px;">Worktree + file-lock + PR queue — 8 task song song không conflict</h2>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-top:24px;flex:1;align-content:start;">
+
+      <div class="anim d2" style="border:1.5px solid var(--line-2);border-radius:4px;padding:18px 22px;background:rgba(255,255,255,.4);">
+        <div class="eyebrow" style="margin-bottom:12px;">1 · Worktree per task</div>
+        <p style="font-size:15px;color:var(--ink-2);line-height:1.55;">
+          Mỗi ticket = 1 git worktree riêng trong <code>~/work/&lt;repo&gt;-&lt;ticket&gt;</code>. Branch riêng, <code>node_modules</code> share qua pnpm. AI chạy hoàn toàn trong worktree → main checkout của dev không bao giờ bị "dở dang".
+        </p>
+        <div class="codebox" style="margin-top:10px;font-size:13px;">$ git worktree add ../web-412 -b feat/web-412
+$ git worktree add ../web-419 -b feat/web-419
+$ git worktree list
+~/acme           [main]
+~/work/web-412   [feat/web-412]
+~/work/web-419   [feat/web-419]</div>
+      </div>
+
+      <div class="anim d3" style="border:1.5px solid var(--line-2);border-radius:4px;padding:18px 22px;background:rgba(255,255,255,.4);">
+        <div class="eyebrow" style="margin-bottom:12px;">2 · CODEOWNERS + auto-assign</div>
+        <p style="font-size:15px;color:var(--ink-2);line-height:1.55;">
+          File <code>.github/CODEOWNERS</code> map module → owner. PR mở → auto-request review đúng người. AI cũng đọc CODEOWNERS để biết "khi đụng <code>auth/</code> phải tag <em>@huy</em>".
+        </p>
+        <div class="codebox" style="margin-top:10px;font-size:13px;"><span class="cm"># CODEOWNERS</span>
+/app/orders/        @linh @tu
+/app/payments/      @hung
+/packages/auth/     @huy @lead
+/db/migrations/     @lead  <span class="cm"># ai cũng phải hỏi Lead</span></div>
+      </div>
+
+      <div class="anim d4" style="border:1.5px solid var(--line-2);border-radius:4px;padding:18px 22px;background:rgba(255,255,255,.4);">
+        <div class="eyebrow" style="margin-bottom:12px;">3 · File-lock warning bot</div>
+        <p style="font-size:15px;color:var(--ink-2);line-height:1.55;">
+          GitHub Action chạy mỗi khi PR mở/update: so file đụng với <b>các PR open khác</b>. Overlap → comment cảnh báo + tag 2 owner. AI agent cũng check trước khi bắt đầu task: "có ai đang sửa file này không?" — qua <code>gh pr list --search</code>.
+        </p>
+      </div>
+
+      <div class="anim d5" style="border:1.5px solid var(--line-2);border-radius:4px;padding:18px 22px;background:rgba(255,255,255,.4);">
+        <div class="eyebrow" style="margin-bottom:12px;">4 · Merge queue (GitHub native)</div>
+        <p style="font-size:15px;color:var(--ink-2);line-height:1.55;">
+          Bật <code>merge_queue</code> trên main: PR approved → vào queue → GitHub tự rebase + chạy CI lần cuối → merge nếu xanh. Không còn race "2 PR merge cùng lúc làm vỡ main".
+        </p>
+      </div>
+
+      <div class="anim d6" style="border:1.5px solid var(--line-2);border-radius:4px;padding:18px 22px;background:rgba(255,255,255,.4);">
+        <div class="eyebrow" style="margin-bottom:12px;">5 · Shared session handoff (cross-timezone)</div>
+        <p style="font-size:15px;color:var(--ink-2);line-height:1.55;">
+          Linh (VN) hết giờ, task chưa xong. Gõ <code>/handoff</code> → AI export <b>session summary + state + open question</b> vào Linear comment. Sáng hôm sau Hùng (US) mở Linear, "<code>/resume WEB-412</code>" → AI khôi phục context, tiếp tục.
+        </p>
+      </div>
+
+      <div class="anim d6" style="border:1.5px solid var(--accent);border-radius:4px;padding:18px 22px;background:rgba(176,84,47,.05);">
+        <div class="eyebrow" style="margin-bottom:12px;color:var(--accent);">6 · Migration freeze window</div>
+        <p style="font-size:15px;color:var(--ink-2);line-height:1.55;">
+          File <code>db/migrations/</code> chỉ Lead approve. AI có rule trong CLAUDE.md: "<em>nếu task cần migration mới → STOP, mô tả migration cần thiết và đợi Lead approve trước khi tạo file</em>". Tránh 2 dev cùng tạo migration trùng số.
+        </p>
+      </div>
+
+    </div>
+  </div>
+  <div class="footer"><span>06 · Phối hợp 8 người</span><span>Harness for SDLC</span></div>
+</section>
+
+<!-- ============ 07 · CODE REVIEW PIPELINE ============ -->
+<section data-label="Review pipeline">
+  <div class="pad">
+    <div class="kicker anim">PR review · 4 gate, ~5 phút tới human</div>
+    <h2 class="anim d1" style="font-size:38px;margin-top:12px;">Cụ thể từng bot làm gì, comment trông như thế nào</h2>
+
+    <div style="display:grid;grid-template-columns:1.05fr 1fr;gap:30px;margin-top:24px;flex:1;">
+
+      <div style="display:flex;flex-direction:column;gap:10px;">
+        <div class="scn anim d2">
+          <div class="who"><b>~30s</b><span>CI</span></div>
+          <div class="what">
+            <span class="tool">GitHub Actions</span> chạy <code>tc · lint · vitest · build</code>. Fail → bot comment đoạn log lỗi (không phải toàn bộ stdout) + suggest fix. Status check đỏ.
+          </div>
+        </div>
+
+        <div class="scn anim d3">
+          <div class="who"><b>~2 phút</b><span>CodeRabbit</span></div>
+          <div class="what">
+            <span class="tool">CodeRabbit</span> đọc diff → summary PR (3 bullet) + inline comment cho từng file. Tập trung: correctness, complexity, missing test. Comment có icon mức độ: <code>💡 nit</code> / <code>⚠ warn</code> / <code>🛑 block</code>.
+          </div>
+        </div>
+
+        <div class="scn anim d4">
+          <div class="who"><b>~3 phút</b><span>Security bot</span></div>
+          <div class="what">
+            <span class="tool">Semgrep</span> chạy ruleset OWASP + custom rule team. <span class="tool">Claude Code Action</span> review song song: focus secret leak, IDOR, SQLi qua Drizzle, unsafe <code>dangerouslySetInnerHTML</code>. Comment ở line cụ thể.
+          </div>
+        </div>
+
+        <div class="scn anim d5">
+          <div class="who"><b>~4 phút</b><span>Convention bot</span></div>
+          <div class="what">
+            Action custom: đọc <code>CLAUDE.md</code> + diff → flag vi phạm naming/layering. Vd. "<em>file mới ở <code>_actions/</code> nhưng không export <code>'use server'</code></em>".
+          </div>
+        </div>
+
+        <div class="scn anim d6">
+          <div class="who"><b>~5 phút</b><span>Human</span></div>
+          <div class="what">
+            Reviewer (theo CODEOWNERS) nhận notification. Mở PR thấy: <b>summary đã có</b>, <b>nit/warn đã được tác giả address</b>, chỉ còn <em>design/business decision</em> cần xem. Comment depth tăng, time-to-approve giảm.
+          </div>
+        </div>
+      </div>
+
+      <div class="anim d3">
+        <div class="eyebrow" style="margin-bottom:10px;">Ví dụ comment thật từ CodeRabbit</div>
+        <div class="codebox"><span class="cm"># app/_actions/list-orders.ts:42</span>
+
+<span class="me">⚠ Potential N+1 query</span>
+
+<span class="kw">for</span> (<span class="kw">const</span> order <span class="kw">of</span> orders) {
+  order.items = <span class="kw">await</span> db.query
+    .items.findMany({
+      where: eq(items.orderId,
+                order.id)  <span class="cm">// ← in loop</span>
+    });
+}
+
+<span class="me">Suggestion:</span> dùng <span class="kw">inArray</span> để
+batch fetch:
+
+<span class="kw">const</span> items = <span class="kw">await</span> db.query
+  .items.findMany({
+    where: inArray(items.orderId,
+      orders.map(o =&gt; o.id))
+  });
+
+<span class="cm"># Confidence: high · Severity: warn</span></div>
+        <p style="margin-top:12px;font-size:14px;color:var(--ink-3);line-height:1.5;">
+          Tác giả PR có thể trả lời: "<code>@coderabbit fix</code>" → bot tự commit fix lên PR. Hoặc "<code>@coderabbit ignore</code>" + lý do → comment dismiss, audit log lưu.
+        </p>
+      </div>
+
+    </div>
+  </div>
+  <div class="footer"><span>07 · Code review pipeline</span><span>Harness for SDLC</span></div>
+</section>
+
+<!-- ============ 08 · TESTING PLAYBOOK ============ -->
+<section data-label="Testing playbook">
+  <div class="pad">
+    <div class="kicker anim">Testing · 3 playbook cụ thể</div>
+    <h2 class="anim d1" style="font-size:38px;margin-top:12px;">Lệnh gì, file gì, lúc nào — không lý thuyết</h2>
+
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:24px;flex:1;align-content:start;">
+
+      <div class="anim d2" style="border:1.5px solid var(--line-2);border-radius:4px;padding:20px 22px;background:rgba(255,255,255,.4);display:flex;flex-direction:column;gap:10px;">
+        <div class="eyebrow">A · TDD-AI cho feature mới</div>
+        <p style="font-size:14.5px;color:var(--ink-2);line-height:1.55;">
+          Trước khi cho AI viết code: "<em>Đọc acceptance criteria Linear, viết vitest test trước, chưa cần code chạy được</em>."
+        </p>
+        <div class="codebox" style="font-size:13px;">$ claude
+&gt; /tdd WEB-412
+
+✓ Tạo orders.spec.ts:
+  - filter by single status
+  - filter by multi status
+  - empty filter = all
+  - invalid status = 400
+✗ All red (chưa có impl)
+
+&gt; Viết impl để pass test
+
+✓ pnpm test orders → 4/4 green</div>
+        <p style="font-size:13px;color:var(--good);font-weight:500;">→ AI có spec rõ ràng → ít bịa.</p>
+      </div>
+
+      <div class="anim d3" style="border:1.5px solid var(--line-2);border-radius:4px;padding:20px 22px;background:rgba(255,255,255,.4);display:flex;flex-direction:column;gap:10px;">
+        <div class="eyebrow">B · Property-based cho logic phức tạp</div>
+        <p style="font-size:14.5px;color:var(--ink-2);line-height:1.55;">
+          Hàm <code>calculateDiscount(order, coupons[])</code>: thay vì 10 test case cứng, dùng <span class="tool">fast-check</span> sinh ngẫu nhiên.
+        </p>
+        <div class="codebox" style="font-size:13px;"><span class="fn">test</span>(<span class="st">"discount ≤ subtotal"</span>, () =&gt; {
+  fc.<span class="fn">assert</span>(fc.<span class="fn">property</span>(
+    <span class="fn">orderArb</span>(), <span class="fn">couponsArb</span>(),
+    (o, cs) =&gt; {
+      <span class="kw">const</span> d = <span class="fn">calculateDiscount</span>(o, cs);
+      <span class="kw">return</span> d &gt;= <span class="nu">0</span> &amp;&amp; d &lt;= o.subtotal;
+    }
+  ));
+});</div>
+        <p style="font-size:13px;color:var(--good);font-weight:500;">→ Bắt edge case AI không nghĩ ra.</p>
+      </div>
+
+      <div class="anim d4" style="border:1.5px solid var(--line-2);border-radius:4px;padding:20px 22px;background:rgba(255,255,255,.4);display:flex;flex-direction:column;gap:10px;">
+        <div class="eyebrow">C · Eval cho feature dùng LLM</div>
+        <p style="font-size:14.5px;color:var(--ink-2);line-height:1.55;">
+          Feature "Tóm tắt đơn hàng" dùng Claude. Test thường không đủ — cần <span class="tool">promptfoo</span>.
+        </p>
+        <div class="codebox" style="font-size:13px;"><span class="cm"># promptfooconfig.yaml</span>
+<span class="kw">tests</span>:
+  - <span class="kw">vars</span>:
+      order: <span class="st">"@fixtures/order-01.json"</span>
+    <span class="kw">assert</span>:
+      - <span class="kw">type</span>: contains-json
+      - <span class="kw">type</span>: llm-rubric
+        <span class="kw">value</span>: <span class="st">"mention total &amp; status"</span>
+      - <span class="kw">type</span>: latency
+        <span class="kw">threshold</span>: <span class="nu">3000</span>
+
+<span class="cm"># CI: promptfoo eval --output html</span>
+<span class="cm"># PR fail nếu pass rate &lt; 95%</span></div>
+        <p style="font-size:13px;color:var(--good);font-weight:500;">→ Regression cho LLM giống unit test cho code.</p>
+      </div>
+
+    </div>
+
+    <div class="anim d6" style="margin-top:18px;display:grid;grid-template-columns:1fr 1fr;gap:18px;">
+      <div style="border:1.5px solid var(--line-2);border-radius:4px;padding:14px 18px;background:rgba(255,255,255,.4);">
+        <div class="eyebrow" style="margin-bottom:6px;">Flake quarantine — autonomous</div>
+        <p style="font-size:14px;color:var(--ink-2);line-height:1.5;">
+          Test fail intermittently? GitHub Action <code>quarantine-flaky</code> chạy hằng đêm: rerun fail test 5 lần, nếu ≥ 2 pass → đánh dấu <code>test.skip.flaky</code> + tạo Linear ticket. CI không block, nhưng có hàng đợi để fix.
+        </p>
+      </div>
+      <div style="border:1.5px solid var(--line-2);border-radius:4px;padding:14px 18px;background:rgba(255,255,255,.4);">
+        <div class="eyebrow" style="margin-bottom:6px;">Mutation testing weekly</div>
+        <p style="font-size:14px;color:var(--ink-2);line-height:1.5;">
+          <span class="tool">Stryker</span> chạy mỗi Chủ nhật trên module quan trọng (auth, payment). Mutation score &lt; 75% → ticket auto cho team owner: "test coverage 100% nhưng kill rate thấp, hãy bổ sung assertion thật."
+        </p>
+      </div>
+    </div>
+  </div>
+  <div class="footer"><span>08 · Testing playbook</span><span>Harness for SDLC</span></div>
+</section>
+
+<!-- ============ 09 · ASYNC PATTERNS ============ -->
+<section data-label="Async patterns">
+  <div class="pad">
+    <div class="kicker anim">Pattern bất đồng bộ · Khi nào dùng cái nào</div>
+    <h2 class="anim d1" style="font-size:38px;margin-top:12px;">3 chế độ — chọn theo blast radius, không theo "tiện"</h2>
+
+    <table class="spec anim d2" style="margin-top:24px;flex:1;">
+      <tr>
+        <th>Chế độ</th>
+        <th>Tool / lệnh</th>
+        <th>Dùng khi</th>
+        <th>Ví dụ task</th>
+        <th>Rủi ro</th>
+      </tr>
+      <tr>
+        <td><b>Sync (pair)</b><br><span style="font-size:12px;color:var(--ink-3);">Dev xem từng bước</span></td>
+        <td><code>claude</code> CLI<br>VS Code extension</td>
+        <td>Logic mới · refactor đụng &gt; 5 file · debug khó</td>
+        <td>WEB-412 (filter Orders) · sửa bug Sentry · viết unit test phức tạp</td>
+        <td>Thấp — dev approve mọi edit</td>
+      </tr>
+      <tr>
+        <td><b>Async (background)</b><br><span style="font-size:12px;color:var(--ink-3);">Worktree riêng, dev review PR sau</span></td>
+        <td><code>claude --headless --task X</code><br>Hoặc <code>gh task create</code> (custom)</td>
+        <td>Task scope rõ · có test bao phủ · dev muốn quản nhiều task</td>
+        <td>Rebase 5 PR sau khi merge stack · viết test bổ sung cho module cũ · bump dep version</td>
+        <td>Trung bình — dev review trước merge</td>
+      </tr>
+      <tr>
+        <td><b>Autonomous (scheduled)</b><br><span style="font-size:12px;color:var(--ink-3);">Cron / event trigger, không có human in loop</span></td>
+        <td>GitHub Actions cron<br>+ <code>claude --headless</code></td>
+        <td>Task lặp · output có gate (test/lint) · rollback dễ</td>
+        <td>Lint fix mỗi đêm · update snapshot · sync i18n keys từ Crowdin · close stale issue</td>
+        <td>Cần allowlist nghiêm + sandbox + alert nếu chạm file critical</td>
+      </tr>
+    </table>
+
+    <div class="anim d5" style="margin-top:20px;display:grid;grid-template-columns:1fr 1fr;gap:18px;">
+      <div style="border:1.5px solid var(--line-2);border-radius:4px;padding:16px 20px;background:rgba(255,255,255,.4);">
+        <div class="eyebrow" style="margin-bottom:8px;">Ví dụ async cụ thể — "Hôm nay Linh quản 3 task"</div>
+        <p style="font-size:14.5px;color:var(--ink-2);line-height:1.55;">
+          09:00 — Linh dùng sync cho WEB-412 (feature mới, design lạ). 10:30 — xong PR. 10:35 — spawn 2 background agent: WEB-419 (viết test cho module cũ) + DEP-3 (bump <code>next</code> 15.1→15.2). 11:00 — Linh pair tiếp cho WEB-420. 14:00 — 2 background PR đã sẵn → Linh review, merge.
+        </p>
+      </div>
+      <div style="border:1.5px solid var(--accent);border-radius:4px;padding:16px 20px;background:rgba(176,84,47,.05);">
+        <div class="eyebrow" style="margin-bottom:8px;color:var(--accent);">Ví dụ autonomous cụ thể — "Mỗi 06:00 sáng"</div>
+        <p style="font-size:14.5px;color:var(--ink-2);line-height:1.55;">
+          Cron <code>nightly-hygiene.yml</code>: (1) chạy <code>eslint --fix</code> + open PR nếu có diff · (2) update <code>vitest snapshot</code> nếu chỉ là format đổi · (3) close issue label <code>needs-info</code> không phản hồi 14 ngày. Tag <em>@lead</em> review buổi sáng — 5 phút thay vì 1 giờ thủ công mỗi tuần.
+        </p>
+      </div>
+    </div>
+  </div>
+  <div class="footer"><span>09 · Async patterns</span><span>Harness for SDLC</span></div>
+</section>
+
+<!-- ============ 10 · ONBOARDING ============ -->
+<section data-label="Onboarding">
+  <div class="pad">
+    <div class="kicker anim">Onboarding · Dev mới ngày 1 → PR đầu ngày 3</div>
+    <h2 class="anim d1" style="font-size:38px;margin-top:12px;">
+      <span class="serif-it accent">Mai (BE mới)</span> — join thứ 2, PR đầu thứ 4
+    </h2>
+
+    <div style="display:flex;flex-direction:column;gap:10px;margin-top:22px;flex:1;justify-content:center;">
+
+      <div class="scn anim d2">
+        <div class="who"><b>Ngày 1 · sáng</b><span>Mai</span></div>
+        <div class="what">
+          <code>git clone</code> + <code>pnpm install</code> + <code>claude</code>. Gõ: "Tôi mới join, giới thiệu cho tôi codebase, bắt đầu từ entry point."
+          AI dùng <code>CLAUDE.md</code> + cấu trúc folder → giải thích kiến trúc, link tới 5 file quan trọng nhất, gợi ý đọc 2 ADR liên quan auth.
+          <div class="outcome">Không cần ai pair onboarding 2 tiếng.</div>
+        </div>
+      </div>
+
+      <div class="scn anim d3">
+        <div class="who"><b>Ngày 1 · chiều</b><span>Mai</span></div>
+        <div class="what">
+          "Có ticket nào dán nhãn <code>good-first-issue</code> không?" → AI gọi <span class="tool">Linear MCP</span> → 3 ticket. Chọn <code>WEB-501</code>: "Sửa typo trong email template".
+          <div class="outcome">Self-serve, không phải đợi Lead assign.</div>
+        </div>
+      </div>
+
+      <div class="scn anim d4">
+        <div class="who"><b>Ngày 2</b><span>Mai</span></div>
+        <div class="what">
+          Task khó hơn: <code>WEB-487</code> "Thêm field <code>note</code> vào order". Mai hỏi: "Pattern thêm field như thế nào?" → AI grep PR cũ tương tự, chỉ ra commit <code>#3456</code> làm chuẩn. Mai làm theo.
+          <div class="outcome">Knowledge transfer qua code, không qua doc.</div>
+        </div>
+      </div>
+
+      <div class="scn anim d5">
+        <div class="who"><b>Ngày 3</b><span>Mai</span></div>
+        <div class="what">
+          Mở PR đầu tiên. CodeRabbit + Convention bot comment 3 nit (đúng style team). Mai fix. Tú (CODEOWNER) review trong 1h, merge.
+          <div class="outcome"><b>First merged PR: ngày 3</b> (baseline cũ: tuần 2).</div>
+        </div>
+      </div>
+
+      <div class="scn anim d6">
+        <div class="who"><b>Tuần 2</b><span>Mai</span></div>
+        <div class="what">
+          Hỏi: "Tại sao team dùng Drizzle thay vì Prisma?" → AI trỏ ADR-007 "Drizzle vs Prisma" với toàn bộ trade-off. Tại sao deploy lên Vercel? → ADR-003. Mai có background như đã ở team 6 tháng.
+          <div class="outcome">ADR + AI = onboarding scale tự động.</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+  <div class="footer"><span>10 · Onboarding</span><span>Harness for SDLC</span></div>
+</section>
+
+<!-- ============ 11 · METRICS THỰC ============ -->
+<section data-label="Metrics thực">
+  <div class="pad">
+    <div class="kicker anim">Số liệu từ team mẫu · 3 tháng sau khi adopt</div>
+    <h2 class="anim d1" style="font-size:38px;margin-top:12px;">Trước → sau, đo bằng dashboard không cảm tính</h2>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:30px;margin-top:28px;flex:1;">
+
+      <div>
+        <div class="eyebrow anim d2" style="margin-bottom:12px;">DORA</div>
+        <table class="spec anim d2">
+          <tr><th>Metric</th><th>Trước</th><th>Sau 3 tháng</th></tr>
+          <tr><td>Lead time (commit → prod)</td><td>2.4 ngày</td><td><b>0.9 ngày</b> ↓62%</td></tr>
+          <tr><td>Deploy/tuần</td><td>4</td><td><b>11</b> ↑175%</td></tr>
+          <tr><td>Change failure rate</td><td>8%</td><td>9% (giữ)</td></tr>
+          <tr><td style="border:0;">MTTR (incident)</td><td style="border:0;">38 phút</td><td style="border:0;"><b>14 phút</b> ↓63%</td></tr>
+        </table>
+
+        <div class="eyebrow anim d4" style="margin-top:24px;margin-bottom:12px;">PR throughput</div>
+        <table class="spec anim d4">
+          <tr><th>Metric</th><th>Trước</th><th>Sau</th></tr>
+          <tr><td>PR merged/dev/tuần</td><td>2.1</td><td><b>4.6</b></td></tr>
+          <tr><td>Time-to-first-review</td><td>3h 20m</td><td><b>6 phút</b> (bot)</td></tr>
+          <tr><td>Time-to-approve (human)</td><td>11h</td><td><b>2h 15m</b></td></tr>
+          <tr><td style="border:0;">Review comments/PR</td><td style="border:0;">12 (nhiều nit)</td><td style="border:0;">5 (toàn design)</td></tr>
+        </table>
+      </div>
+
+      <div>
+        <div class="eyebrow anim d3" style="margin-bottom:12px;">AI-specific</div>
+        <table class="spec anim d3">
+          <tr><th>Metric</th><th>Số liệu</th></tr>
+          <tr><td>First-try pass rate</td><td><b>71%</b> (gate xanh ngay lần đầu)</td></tr>
+          <tr><td>AI-authored PR revert (7d)</td><td><b>3%</b> (target &lt; 5%)</td></tr>
+          <tr><td>Cost / merged PR (token)</td><td><b>$0.42</b> trung bình</td></tr>
+          <tr><td>Cost / dev / tháng</td><td><b>$78</b></td></tr>
+          <tr><td>Onboarding (first PR)</td><td><b>3 ngày</b> (cũ: 9 ngày)</td></tr>
+          <tr><td style="border:0;">Flaky test backlog</td><td style="border:0;"><b>0</b> (autonomous fix nightly)</td></tr>
+        </table>
+
+        <div class="anim d6" style="margin-top:24px;border-left:3px solid var(--accent);padding:10px 16px;background:rgba(176,84,47,.05);">
+          <p style="font-size:15px;color:var(--ink-2);line-height:1.55;">
+            <b>Đọc số liệu đúng:</b> tốc độ tăng mà failure rate <b>không tăng</b> — đó là thắng lợi của <em>harness</em>, không phải may mắn.
+            Nếu CFR tăng cùng — harness yếu (verification thưa), không phải team giỏi hơn.
+          </p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+  <div class="footer"><span>11 · Metrics thực</span><span>Harness for SDLC</span></div>
+</section>
+
+<!-- ============ 12 · ROADMAP + CLOSING ============ -->
+<section data-label="Lộ trình">
+  <div class="pad">
+    <div class="kicker anim">Lộ trình adopt · 8 tuần</div>
+    <h2 class="anim d1" style="font-size:38px;margin-top:12px;">Tuần nào làm gì, ai làm, đo gì</h2>
+
+    <table class="spec anim d2" style="margin-top:24px;">
+      <tr>
+        <th>Tuần</th>
+        <th>Việc cụ thể</th>
+        <th>Ai chủ trì</th>
+        <th>Đo bằng</th>
+      </tr>
+      <tr>
+        <td><b>1</b></td>
+        <td>Viết <code>CLAUDE.md</code> · <code>.claude/settings.json</code> · cài Claude Code cho cả team · workshop 1h</td>
+        <td>Tech Lead</td>
+        <td>100% dev đã chạy được lệnh đầu tiên</td>
+      </tr>
+      <tr>
+        <td><b>2</b></td>
+        <td>Tăng tốc gate: <code>tc</code> + <code>lint</code> + <code>test scoped</code> &lt; 30s · pre-commit hook · CODEOWNERS</td>
+        <td>1 dev/team</td>
+        <td>Thời gian từ save → feedback &lt; 30s ở 80% file</td>
+      </tr>
+      <tr>
+        <td><b>3</b></td>
+        <td>Bật CodeRabbit + Semgrep trên PR · skill <code>/code-review</code> · convention bot custom</td>
+        <td>1 dev BE + 1 dev FE</td>
+        <td>Time-to-first-review &lt; 10 phút</td>
+      </tr>
+      <tr>
+        <td><b>4</b></td>
+        <td>MCP cho Linear + Sentry + Postgres dev · workflow handoff cross-timezone</td>
+        <td>Tech Lead + Infra</td>
+        <td>50% dev dùng MCP ≥ 1 lần/ngày</td>
+      </tr>
+      <tr>
+        <td><b>5–6</b></td>
+        <td>Worktree pattern + background agent · file-lock warning · merge queue</td>
+        <td>All</td>
+        <td>≥ 30% PR ra từ background agent</td>
+      </tr>
+      <tr>
+        <td><b>7</b></td>
+        <td>Eval gate cho 2 feature LLM trọng yếu (promptfoo) · mutation testing weekly cho auth/payment</td>
+        <td>QA + 2 owner module</td>
+        <td>Eval pass rate baseline được lưu</td>
+      </tr>
+      <tr>
+        <td style="border:0;"><b>8</b></td>
+        <td style="border:0;">Autonomous nightly: lint fix, snapshot update, stale issue · dashboard DORA + AI metric · retro</td>
+        <td style="border:0;">Tech Lead</td>
+        <td style="border:0;">Dashboard live · so sánh baseline tuần 1</td>
+      </tr>
+    </table>
+
+    <div class="anim d6" style="margin-top:28px;border-top:1.5px solid var(--line);padding-top:22px;display:grid;grid-template-columns:1fr 1fr 1fr;gap:24px;">
+      <div><div class="eyebrow" style="margin-bottom:6px;">Sai lầm cần tránh</div><p style="font-size:14.5px;color:var(--ink-2);line-height:1.5;">Bỏ qua tuần 1–2 nhảy thẳng background agent. <b>Gate chậm + context yếu = AI thừa lỗi.</b></p></div>
+      <div><div class="eyebrow" style="margin-bottom:6px;">Đòn bẩy lớn nhất</div><p style="font-size:14.5px;color:var(--ink-2);line-height:1.5;">Tốc độ gate (tuần 2). Loop nhanh = AI hữu dụng, dev cũng hữu dụng.</p></div>
+      <div><div class="eyebrow" style="margin-bottom:6px;">Chỉ số dẫn dắt</div><p style="font-size:14.5px;color:var(--ink-2);line-height:1.5;"><b>First-try pass rate</b> — đo "context đủ chưa". Tăng số PR là kết quả phụ.</p></div>
+    </div>
+  </div>
+  <div class="footer"><span>12 · Lộ trình 8 tuần</span><span>Harness for SDLC</span></div>
+</section>
+
+</deck-stage>
+
+<template id="deck-stage-loading">
+<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+  <rect width="100" height="100" fill="#1C1A15"/>
+  <circle cx="50" cy="50" r="22" fill="none" stroke="#B0542F" stroke-width="3"/>
+  <circle cx="50" cy="50" r="7" fill="#F4F1EA"/>
+  <line x1="50" y1="28" x2="50" y2="14" stroke="#B0542F" stroke-width="3"/>
+  <line x1="50" y1="72" x2="50" y2="86" stroke="#B0542F" stroke-width="3"/>
+  <line x1="28" y1="50" x2="14" y2="50" stroke="#B0542F" stroke-width="3"/>
+  <line x1="72" y1="50" x2="86" y2="50" stroke="#B0542F" stroke-width="3"/>
+</svg>
+</template>
+
+<script src="deck-stage.js"></script>
+</body>
+</html>
